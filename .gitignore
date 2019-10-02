@@ -1,0 +1,6 @@
+*.log
+*.log.?
+*_sync_*
+*.jar
+*.ptx
+*.dll
