@@ -1207,20 +1207,20 @@ public class DmdSimulator {
         // init images for simulations
         Image gratingPeaks = new Image(width, height);
         //Image intensityOn = new Image(width, height);
-        Image intensiry = new Image(width, height);
+        Image intensity = new Image(width, height);
         //Image envelopeOn = new Image(width, height);
         Image envelope = new Image(width, height);
-
+        //ImageStack intensityStack = new ImageStack(width, height);
         
         gratingPeaks.setTitle(String.valueOf(lambda) + "_grating-peaks");
         //intensityOn.setTitle(String.valueOf(lambda) + "_on-intensity");
-        intensiry.setTitle(String.valueOf(lambda) + "_" + tiltState + "-intensity");
+        intensity.setTitle(String.valueOf(lambda) + "_" + tiltState + "-intensity");
         //envelopeOn.setTitle(String.valueOf(lambda) + "_on-evelope");
         envelope.setTitle(String.valueOf(lambda) + "_" + tiltState + "-evelope");
 
         gratingPeaks.show();
         //intensityOn.show();
-        intensiry.show();
+        intensity.show();
         //envelopeOn.show();
         envelope.show();
         
@@ -1242,12 +1242,13 @@ public class DmdSimulator {
             //envelopeOn.set(buildIntensityImage(ort.computeGpuSingleMirror(true)));
             envelope.set(buildIntensityImage(ort.computeGpuSingleMirror(false)));
             //intensityOn.set(Image.multiply(envelopeOn, gratingPeaks));
-            intensiry.set(Image.multiply(envelope, gratingPeaks));
+            intensity.set(Image.multiply(envelope, gratingPeaks));
+            //intensityStack.addSlice(intensity.getFloatProcessor());
 
             //int[] envelopeOnMax = envelopeOn.findMax();
             int[] envelopeOffMax = envelope.findMax();
             //int[] intensityOnMax = intensityOn.findMax();
-            int[] intensityOffMax = intensiry.findMax();
+            int[] intensityOffMax = intensity.findMax();
             //double intensityEnvelopeDistanceOn = Math.sqrt((Math.pow(envelopeOnMax[0]-intensityOnMax[0], 2) + Math.pow(envelopeOnMax[1]-intensityOnMax[1], 2)))*outStepSize;
             double intensityEnvelopeDistanceOff = Math.sqrt((Math.pow(envelopeOffMax[0]-intensityOffMax[0], 2) + Math.pow(envelopeOffMax[1]-intensityOffMax[1], 2)));
 
@@ -1263,7 +1264,7 @@ public class DmdSimulator {
             //envelopeOn.repaint();
             envelope.repaint();
             //intensityOn.repaint();
-            intensiry.repaint();
+            intensity.repaint();
         }
         
         // cloeses all images
@@ -1271,8 +1272,9 @@ public class DmdSimulator {
         //envelopeOn.close();
         envelope.close();
         //intensityOn.close();
-        intensiry.close();
-        
+        intensity.close();
+        //ImagePlus intensities = new ImagePlus("Intensities", intensityStack);
+        //new FileSaver(intensities).saveAsTiff(outDir + "/diagonals/" + lambda + ".tif");
         return envelopePeakDistance;
     }
     

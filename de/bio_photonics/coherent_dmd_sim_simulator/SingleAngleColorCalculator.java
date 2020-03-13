@@ -41,7 +41,7 @@ public class SingleAngleColorCalculator {
 
         meta.latticeConstant = 7.56;
         meta.fillFactor = 0.92;
-        meta.tiltAngle = 11.7;
+        meta.tiltAngle = 12.0;
 
         meta.beamDiameter = (int) (Math.min(meta.nrX, meta.nrY) * meta.latticeConstant / 2.0);
 
@@ -49,10 +49,10 @@ public class SingleAngleColorCalculator {
         meta.phiOutEnd = 80;
         meta.thetaOutStart = -80;
         meta.thetaOutEnd = 80;
-        meta.outStepSize = 0.1;
+        meta.outStepSize = 0.05;
 
-        meta.phiInStart = -45;
-        meta.phiInEnd = 45;
+        meta.phiInStart = -60;
+        meta.phiInEnd = +60;
         //meta.thetaInStart = -60;
         //meta.thetaInEnd = 60;
         meta.inStepSize = 0.2;
@@ -61,21 +61,30 @@ public class SingleAngleColorCalculator {
         meta.bmp = new Image(meta.nrX, meta.nrY);
         //meta.bmp.setAll(1);
         
-        for(int lambda : meta.lambdas) System.out.println(lambda);
+        //for(int lambda : meta.lambdas) System.out.println(lambda);
         int inSteps = (int) ((meta.phiInEnd - meta.phiInStart) / meta.inStepSize);
+        
+        int counter = 0;
         Image epdByLambda = new Image(inSteps, meta.lambdas.length);
-        epdByLambda.setTitle(lambdaStart + "_" + lambdaEnd + "_epd");
+        epdByLambda.setTitle(lambdaStart + "_" + lambdaEnd + "_epd_" + (int) (meta.tiltAngle*10));
         epdByLambda.show();
+
         for(int lambda : meta.lambdas) {
             System.out.println(lambda);
+            long startTime = System.currentTimeMillis();
             double[] epdDiagonal = DmdSimulator.simulateColorFastDiagonal(meta, lambda, false);
             for(int i = 0; i < epdDiagonal.length; i++) {
                 epdByLambda.set(i, lambda-lambdaStart, (float) epdDiagonal[i]);
             }
             epdByLambda.repaint();
+            long endTime = System.currentTimeMillis();
+            int timeExpected = (int) ((endTime - startTime)*0.001/60 * (meta.lambdas.length - counter++));
+            System.out.println(timeExpected + " minutes left");
         }
-        epdByLambda.saveAsTiff(meta.outDir + epdByLambda.getTitle() + ".tif", meta);
-        epdByLambda.close();
+        
+        
+            epdByLambda.saveAsTiff(meta.outDir + epdByLambda.getTitle() + ".tif", meta);
+            epdByLambda.close();
     }
     
 }
