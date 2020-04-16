@@ -294,6 +294,17 @@ public class Image {
     }
     
     /**
+     * saves this image
+     * @param outfile path to save this image
+     * @param meta meta object
+     */
+    void saveAsTiff(String outfile, DmdSimulationCore.MetaData meta) {
+        update();
+        ip.setProperty("Info", meta.toString());
+        new FileSaver(ip).saveAsTiff(outfile);
+    }
+    
+    /**
      * reads a bitmap, if(pixel==0) 0 else 1
      * @param file file path to the bitmap
      * @return the image of the created bitmap
