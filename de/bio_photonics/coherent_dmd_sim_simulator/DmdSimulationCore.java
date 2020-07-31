@@ -465,10 +465,11 @@ public class DmdSimulationCore {
     /**
      * calculates in the interesting area {@link #setInterestingArea(int)}
      * the field of all out angles
+     * @return 
      * @see #calcCpuOutAngle(int, int) 
      */
     protected Complex[][] calcOutAngles() {
-        
+        System.out.println(trueThStart + " " + trueThEnd + " " + truePhStart + " " + truePhEnd);
         Complex[][] field = new Complex[tMax][pMax];
         for (int th = 0; th < tMax; th++) {
             for (int ph = 0; ph < pMax; ph++) {
@@ -477,12 +478,12 @@ public class DmdSimulationCore {
         }
         for (int th = trueThStart; th < trueThEnd; th++) {
             for (int ph = truePhStart; ph < truePhEnd; ph++) {
-                field[th][ph].add(calcOutAngle(th, ph));
+                field[th][ph].add(calcOutAngle(ph, th));
             }
         }
         for (int th = falseThStart; th < falseThEnd; th++) {
             for (int ph = falsePhStart; ph < falsePhEnd; ph++) {
-                field[th][ph].add(calcOutAngle(th, ph));
+                field[th][ph].add(calcOutAngle(ph, th));
             }
         }
         return field;
@@ -600,10 +601,11 @@ public class DmdSimulationCore {
      * @return image array of
      * [0,1,2,3]=[intensity, true reference field, false reference field, phase]
      */
-    public Image[] simulateFieldAccurate(Vector inBeam) {
+    public Image[] simulateFieldAccurate(Vector inBeam, int interestingAreaInDegrees) {
         setInBeam(inBeam);
         mirrorTrue = calcAnalyticSingleMirror(true);
         mirrorFalse = calcAnalyticSingleMirror(false);
+        setInterestingArea(interestingAreaInDegrees);
         Complex[][] field = calcOutAngles();
         
         Image fieldIntensity = buildIntensityImage(field);

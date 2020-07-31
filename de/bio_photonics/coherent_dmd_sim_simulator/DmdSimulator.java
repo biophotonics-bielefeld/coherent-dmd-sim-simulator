@@ -620,12 +620,12 @@ public class DmdSimulator {
         }
         for (int th = trueThStart; th < trueThEnd; th++) {
             for (int ph = truePhStart; ph < truePhEnd; ph++) {
-                calcCpuOutAngle(th, ph);
+                calcCpuOutAngle(ph, th);
             }
         }
         for (int th = falseThStart; th < falseThEnd; th++) {
             for (int ph = falsePhStart; ph < falsePhEnd; ph++) {
-                calcCpuOutAngle(th, ph);
+                calcCpuOutAngle(ph, th);
             }
         }
     }

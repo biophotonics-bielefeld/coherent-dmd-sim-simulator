@@ -79,7 +79,7 @@ public class AnalyticDiagonalCalculator {
                 double inAngle = phi;//Math.atan(Math.sqrt(2)*Math.tan(phi*Math.PI/180))*180/Math.PI;
                 //System.out.println(inAngle + " " + meta.tiltAngle + " " + waveLength + " " + meta.latticeConstant);
                 double n = calcDiffractionOrder(inAngle, meta.tiltAngle, waveLength, meta.latticeConstant);
-                float value = (float) Math.pow(Math.sin(n*Math.PI), 2.0);
+                float value = (float) Math.sqrt(Math.pow(Math.sin(n*Math.PI), 2.0));
                 //System.out.println(x + " " + y);
                 diagonalEpd.set(x, y, value);
                 

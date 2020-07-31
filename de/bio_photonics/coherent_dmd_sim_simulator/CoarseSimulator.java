@@ -6,6 +6,10 @@
 package de.bio_photonics.coherent_dmd_sim_simulator;
 
 import de.bio_photonics.coherent_dmd_sim_simulator.DmdSimulationCore.MetaData;
+import ij.ImagePlus;
+import ij.ImageStack;
+import ij.io.FileSaver;
+import ij.plugin.HyperStackConverter;
 
 /**
  *
@@ -13,11 +17,12 @@ import de.bio_photonics.coherent_dmd_sim_simulator.DmdSimulationCore.MetaData;
  */
 public class CoarseSimulator extends AbstractSimulator {
     
-    boolean tiltState;
+    boolean tiltState, saveRaws;
     
-    CoarseSimulator(MetaData meta, boolean tiltState) {
+    CoarseSimulator(MetaData meta, boolean tiltState, boolean saveRaws) {
         super(meta);
         this.tiltState = tiltState;
+        this.saveRaws = saveRaws;
     }
     
     @Override
@@ -46,6 +51,10 @@ public class CoarseSimulator extends AbstractSimulator {
         intensityMaxYOff.setTitle(String.valueOf(lambda) + "_" + tiltState + "-intensity-max-y");
         //enveopePeakDistanceOn.setTitle(String.valueOf(lambda) + "_on-eveope-peak-distance");
         enveopePeakDistanceOff.setTitle(String.valueOf(lambda) + "_" + tiltState + "-eveope-peak-distance");
+        
+        ImageStack gratingPeaksStack = new ImageStack(width, height);
+        ImageStack intensityStack = new ImageStack(width, height);
+        ImageStack envelopeStack = new ImageStack(width, height);
 
         gratingPeaks.show();
         //intensityOn.show();
@@ -77,6 +86,15 @@ public class CoarseSimulator extends AbstractSimulator {
                 envelopeOff.set(DmdSimulationCore.buildIntensityImage(dsc.calcAnalyticSingleMirror(tiltState)));
                 //intensityOn.set(Image.multiply(envelopeOn, gratingPeaks));
                 intensityOff.set(Image.multiply(envelopeOff, gratingPeaks));
+                
+                if (saveRaws) {
+                    gratingPeaksStack.addSlice(lambda + "_" + phiIn + "_" + thetaIn
+                            + "_gratingPeaks", gratingPeaks.getFloatProcessor());
+                    envelopeStack.addSlice(lambda + "_" + phiIn + "_" + thetaIn
+                            + "_envelope", envelopeOff.getFloatProcessor());
+                    intensityStack.addSlice(lambda + "_" + phiIn + "_" + thetaIn
+                            + "_intensity", intensityOff.getFloatProcessor());
+                }
                 
                 //int[] envelopeOnMax = envelopeOn.findMax();
                 int[] envelopeOffMax = envelopeOff.findMax();
@@ -131,6 +149,34 @@ public class CoarseSimulator extends AbstractSimulator {
         //enveopePeakDistanceOn.saveAsTiff(outDir + enveopePeakDistanceOn.getTitle() + ".tif", meta);
         enveopePeakDistanceOff.saveAsTiff(outDir + enveopePeakDistanceOff.getTitle() + ".tif", meta);
         
+        if (saveRaws) {
+            ImagePlus gratingPeakImagePlus = new ImagePlus(
+                    lambda + "_coarse_gratingPeaks.tif", gratingPeaksStack);
+            if (gratingPeakImagePlus.getImageStackSize() > 1) gratingPeakImagePlus =
+                    HyperStackConverter.toHyperStack(gratingPeakImagePlus, 1,
+                            thetaInSteps, phiInSteps, "xyztc", "composite");
+            gratingPeakImagePlus.setProperty("Info", meta.toString());
+            new FileSaver(gratingPeakImagePlus).saveAsTiff(
+                    outDir + lambda + "_coarse_gratingPeaks.tif");
+            ImagePlus envelopeImagePlus = new ImagePlus(
+                    lambda + "_coarse_envelope.tif", gratingPeaksStack);
+            if (envelopeImagePlus.getImageStackSize() > 1) envelopeImagePlus =
+                    HyperStackConverter.toHyperStack(envelopeImagePlus, 1,
+                            thetaInSteps, phiInSteps, "xyztc", "composite");
+            envelopeImagePlus.setProperty("Info", meta.toString());
+            new FileSaver(envelopeImagePlus).saveAsTiff(
+                    outDir + lambda + "_coarse_envelope.tif");
+            ImagePlus intensityImagePlus = new ImagePlus(
+                    lambda + "_coarse_intensity.tif", intensityStack);
+            if (intensityImagePlus.getImageStackSize() > 1)
+                intensityImagePlus = HyperStackConverter.toHyperStack(
+                        intensityImagePlus, 1, thetaInSteps, phiInSteps,
+                        "xyztc", "composite");
+            intensityImagePlus.setProperty("Info", meta.toString());
+            new FileSaver(intensityImagePlus).saveAsTiff(
+                    outDir + lambda + "_coarse_intensity.tif");
+        }
+        
         // cloeses all images
         gratingPeaks.close();
         //envelopeOn.close();
@@ -143,6 +189,53 @@ public class CoarseSimulator extends AbstractSimulator {
         intensityMaxYOff.close();
         //enveopePeakDistanceOn.close();
         enveopePeakDistanceOff.close();
+    }
+    
+    public static void main(String[] args) {
+        // creating meta data object
+        MetaData meta = new MetaData();
+        meta.outDir = "D:\\dmd-simulator-images\\";
+        meta.gpuActive = false;
+        
+        int lambdaStart = 400;
+        int lambdaEnd = 700;
+        int lambdaStepSize = 100;
+        int nrLambdas = (lambdaEnd - lambdaStart) / lambdaStepSize + 1;
+        meta.lambdas = new int[(lambdaEnd - lambdaStart) / lambdaStepSize + 1];
+        for (int i = 0; i < nrLambdas; i++) {
+            meta.lambdas[i] = lambdaStart + i*lambdaStepSize;
+            System.out.println(i + " " + meta.lambdas[i]);
+        }
+
+        meta.nrX = 20;
+        meta.nrY = 20;
+
+        meta.latticeConstant = 7.56;
+        meta.fillFactor = 0.92;
+        meta.tiltAngle = 12.0;
+
+        meta.beamDiameter = (int) (Math.min(meta.nrX, meta.nrY) * meta.latticeConstant / 2.0);
+
+        meta.phiOutStart = -60;
+        meta.phiOutEnd = 60;
+        meta.thetaOutStart = -60;
+        meta.thetaOutEnd = 60;
+        meta.outStepSize = 0.05;
+
+        meta.phiInStart = -5;
+        meta.phiInEnd = +5;
+        meta.thetaInStart = -5;
+        meta.thetaInEnd = 5;
+        meta.inStepSize = 5.0;
+
+        //meta.bmp = Image.readBitmap("C:\\Users\\m.lachetta\\Downloads\\SLM_0,40_1,75_33_wl532_ang0_pha0.bmp");
+        meta.bmp = new Image(meta.nrX, meta.nrY);
+        
+        //DmdSimulationCore dsc = new DmdSimulationCore(meta);
+        
+        
+        CoarseSimulator cs = new CoarseSimulator(meta, false, true);
+        cs.simulate();
     }
     
 }

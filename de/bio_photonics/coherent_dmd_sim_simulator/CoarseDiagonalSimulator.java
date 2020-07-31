@@ -132,8 +132,8 @@ public class CoarseDiagonalSimulator extends AbstractSimulator {
     public static void main(String[] args) {
         // creating meta data object
         MetaData meta = new MetaData();
-        meta.outDir = "D:\\dmd-simulator-images";
-        meta.gpuActive = false;
+        meta.outDir = "D:\\dmd-simulator-images\\";
+        meta.gpuActive = true;
         
         int lambdaStart = 400;
         int lambdaEnd = 700;
