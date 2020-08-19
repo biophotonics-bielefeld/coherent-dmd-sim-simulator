@@ -20,6 +20,10 @@ import ij.ImagePlus;
 import ij.io.FileSaver;
 import ij.io.Opener;
 import ij.process.FloatProcessor;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.Scanner;
 
 /**
  * Simple class to handle 2 dimensinal float images
@@ -282,16 +286,16 @@ public class Image {
         new FileSaver(ip).saveAsTiff(outfile);
     }
     
-    /**
-     * saves this image
-     * @param outfile path to save this image
-     * @param meta meta object
-     */
-    void saveAsTiff(String outfile, DmdSimulator.MetaData meta) {
-        update();
-        ip.setProperty("Info", meta.toString());
-        new FileSaver(ip).saveAsTiff(outfile);
-    }
+//    /**
+//     * saves this image
+//     * @param outfile path to save this image
+//     * @param meta meta object
+//     */
+//    void saveAsTiff(String outfile, DmdSimulator.MetaData meta) {
+//        update();
+//        ip.setProperty("Info", meta.toString());
+//        new FileSaver(ip).saveAsTiff(outfile);
+//    }
     
     /**
      * saves this image
@@ -322,5 +326,83 @@ public class Image {
             }
         }
         return bmp;
+    }
+    
+    public static Image generateCircles(int size) {
+        Image img = new Image(size, size);
+        for(int y = 0; y < size; y++) {
+            for (int x = 0; x < size; x++) {
+                int X = x - size/2;
+                int Y = y - size/2;
+                double r = Math.sqrt(X*X+Y*Y);
+                int R = (int) r;
+                if (R % 4 < 2) img.set(x, y, 0);
+                else img.set(x, y, 1);
+            }
+        }
+        return img;
+    }
+    
+    public static String[] readFile(String path) {
+        try {
+            File file = new File(path);
+            Scanner reader = new Scanner(file);
+            ArrayList<String> lines = new ArrayList<>();
+            while (reader.hasNextLine()) {
+                lines.add(reader.nextLine());
+            }
+            reader.close();
+            String[] lineArray = new String[lines.size()];
+            lineArray = lines.toArray(lineArray);
+            return lineArray;
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
+    public static float[][] linesToFloats(String[] lines) {
+        int N = lines.length;
+        int M = lines[0].split(" ").length;
+        float[][] floatArray = new float[M][N];
+        for(int n = 0; n < N; n++) {
+            String[] numbers = lines[n].split(" ");
+            for (int m = 0; m < M; m++) {
+                Float value = Float.valueOf(numbers[m]);
+                floatArray[m][n] = value;
+            }
+        }
+        return floatArray;
+    }
+    
+    public static Image readImageFromTxtFile(String path) {
+        String[] lines = readFile(path);
+        float[][] floatArray = linesToFloats(lines);
+        float[] values = floatArray[2];
+        int width = (int) Math.sqrt(values.length);
+        Image img = new Image(width, width);
+        for(int x = 0; x < width; x++) {
+            for (int y = 0; y < width; y++) {
+                img.set(x, y, values[width * x + y]);
+            }
+        }
+        return img;
+    }
+    
+    public static void main(String args[]) {
+        
+        Image img = generateCircles(50);
+        img.saveAsTiff("D:\\dmd-simulator-images\\interesting patterns\\circles-50.tif");
+        /*
+        String folder = "D:\\Gits\\dmd_traycing\\build\\";
+        String fileWoEnding = "ray_tracing";
+        Image img = readImageFromTxtFile(folder + fileWoEnding + ".txt");
+        img.saveAsTiff(folder + fileWoEnding + ".tif");
+        fileWoEnding = "one_mirror_ref_image";
+        img = readImageFromTxtFile(folder + fileWoEnding + ".txt");
+        img.saveAsTiff(folder + fileWoEnding + ".tif");
+        fileWoEnding = "analytic";
+        img = readImageFromTxtFile(folder + fileWoEnding + ".txt");
+        img.saveAsTiff(folder + fileWoEnding + ".tif");
+         */
     }
 }

@@ -222,12 +222,12 @@ public class Dmd {
         Dmd dmd = new Dmd(nrX, nrY, mirrorSize, gap);
         
         
-        Image pattern = Image.readBitmap("C:\\Users\\m.lachetta\\Downloads\\DLP6500_1,35_1,75_33_wl532_ang2_pha0.bmp");
+        Image pattern = new Image(100, 100);//Image.readBitmap("C:\\Users\\m.lachetta\\Downloads\\DLP6500_1,35_1,75_33_wl532_ang2_pha0.bmp");
         pattern.multiply(24);
         pattern.add(-12);
-        pattern.saveAsTiff("G:\\dmd-ray-tracer-imgs\\pattern.tif");
-        Image surfaceView = dmd.getSurfaceView(10, 10, 100, pattern.asDoubleArray());
-        surfaceView.saveAsTiff("G:\\dmd-ray-tracer-imgs\\dmd_10.tif");
+        pattern.saveAsTiff("D:\\dmd-simulator-images\\pattern.tif");
+        Image surfaceView = dmd.getSurfaceView(1, 1, 1000, pattern.asDoubleArray());
+        surfaceView.saveAsTiff("D:\\dmd-simulator-images\\dmd_10.tif");
         
         //surfaceView = dmd.getSurfaceView(40, 40, 25, pattern.asDoubleArray());
         //surfaceView.saveAsTiff("G:\\dmd-ray-tracer-imgs\\dmd_40.tif");

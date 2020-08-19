@@ -34,7 +34,7 @@ public class AnalyticDiagonalCalculator {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        DmdSimulator.MetaData meta = new DmdSimulator.MetaData();
+        DmdSimulationCore.MetaData meta = new DmdSimulationCore.MetaData();
         meta.outDir = args[0] + "/";
         meta.gpuActive = Boolean.valueOf(args[1]);
         

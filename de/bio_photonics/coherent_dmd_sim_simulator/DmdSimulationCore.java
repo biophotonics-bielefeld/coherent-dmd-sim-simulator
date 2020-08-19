@@ -507,8 +507,7 @@ public class DmdSimulationCore {
                 double additionalPl = initInPathLength + outPathLength;
                 double additionalPhase = (additionalPl / lambda) * 2 * Math.PI;
                 Complex referenceField = referenceMirror[th][ph];
-                double centerDistance = gaussians[my][mx];
-                double r = referenceField.abs() * gaussian(centerDistance, beamDiameter);
+                double r = referenceField.abs() * gaussians[my][mx];
                 double p = referenceField.arg() + additionalPhase;
                 field.add(new Complex(r*Math.cos(p), r*Math.sin(p)));
             }

@@ -192,7 +192,7 @@ public class AccurateSimulator extends AbstractSimulator {
         meta.outDir = "D:\\dmd-simulator-images\\";
         meta.gpuActive = false;
         
-        int lambdaStart = 400;
+        int lambdaStart = 532;
         int lambdaEnd = 700;
         int lambdaStepSize = 100;
         int nrLambdas = (lambdaEnd - lambdaStart) / lambdaStepSize + 1;
@@ -202,8 +202,8 @@ public class AccurateSimulator extends AbstractSimulator {
             System.out.println(i + " " + meta.lambdas[i]);
         }
 
-        meta.nrX = 20;
-        meta.nrY = 20;
+        meta.nrX = 50;
+        meta.nrY = 50;
 
         meta.latticeConstant = 7.56;
         meta.fillFactor = 0.92;
@@ -211,19 +211,19 @@ public class AccurateSimulator extends AbstractSimulator {
 
         meta.beamDiameter = (int) (Math.min(meta.nrX, meta.nrY) * meta.latticeConstant / 2.0);
 
-        meta.phiOutStart = -60;
-        meta.phiOutEnd = 60;
-        meta.thetaOutStart = -60;
-        meta.thetaOutEnd = 60;
-        meta.outStepSize = 0.05;
+        meta.phiOutStart = -15;
+        meta.phiOutEnd = 15;
+        meta.thetaOutStart = -15;
+        meta.thetaOutEnd = 15;
+        meta.outStepSize = 0.02;
 
-        meta.phiInStart = -5;
-        meta.phiInEnd = +5;
-        meta.thetaInStart = -5;
-        meta.thetaInEnd = 5;
-        meta.inStepSize = 5.0;
+        meta.phiInStart = -21;
+        meta.phiInEnd = -20;
+        meta.thetaInStart = 21;
+        meta.thetaInEnd = 22;
+        meta.inStepSize = 1.0;
 
-        //meta.bmp = Image.readBitmap("C:\\Users\\m.lachetta\\Downloads\\SLM_0,40_1,75_33_wl532_ang0_pha0.bmp");
+        //meta.bmp = Image.readBitmap("D:\\dmd-simulator-images\\interesting patterns\\circles-50.bmp");
         meta.bmp = new Image(meta.nrX, meta.nrY);
         
         //DmdSimulationCore dsc = new DmdSimulationCore(meta);
