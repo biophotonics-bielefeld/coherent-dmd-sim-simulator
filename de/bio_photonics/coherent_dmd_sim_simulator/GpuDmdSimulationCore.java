@@ -41,7 +41,6 @@ public class GpuDmdSimulationCore extends DmdSimulationCore {
         
         super(dmd, tiltAngle, lambda, beamDiameter, phMin, phMax, thMin, thMax,
                 stepSize, flipStates);
-        
         init();
     }
     
@@ -51,24 +50,25 @@ public class GpuDmdSimulationCore extends DmdSimulationCore {
     }
     
     private void init() {
-        if (gpuInit) return;
-        JCudaEngine.setExceptionsEnabled(true);
-        gpuEngine = new JCudaEngine();
-        gpuModuleName = "JCudaCalcOutAnglesKernel";
-        String cuFilePath ="de\\bio_photonics\\dmd_ray_tracer\\jcuda\\JCudaCalcOutAnglesKernel.cu";
-        gpuFunctionName = "calcOutAngles";
-        try {
-            gpuEngine.loadModule(gpuModuleName, cuFilePath);
-            gpuEngine.loadModule("JCudaCalcDeltaPeaks", "de\\bio_photonics\\dmd_ray_tracer\\jcuda\\JCudaCalcDeltaPeaksKernel.cu");
-            gpuEngine.loadModule("JCudaCalcSingleMirror", "de\\bio_photonics\\dmd_ray_tracer\\jcuda\\JCudaCalcSingleMirrorKernel.cu");
-        } catch (IOException ex) {
-            throw new RuntimeException("loading GPU modules failed");
+        if (!gpuInit) {
+            JCudaEngine.setExceptionsEnabled(true);
+            gpuEngine = new JCudaEngine();
+            gpuModuleName = "JCudaCalcOutAnglesKernel";
+            String cuFilePath ="de\\bio_photonics\\dmd_ray_tracer\\jcuda\\JCudaCalcOutAnglesKernel.cu";
+            gpuFunctionName = "calcOutAngles";
+            try {
+                gpuEngine.loadModule(gpuModuleName, cuFilePath);
+                gpuEngine.loadModule("JCudaCalcDeltaPeaks", "de\\bio_photonics\\dmd_ray_tracer\\jcuda\\JCudaCalcDeltaPeaksKernel.cu");
+                gpuEngine.loadModule("JCudaCalcSingleMirror", "de\\bio_photonics\\dmd_ray_tracer\\jcuda\\JCudaCalcSingleMirrorKernel.cu");
+            } catch (IOException ex) {
+                throw new RuntimeException("loading GPU modules failed");
+            }
+
+            gpuEngine.loadFunktion(gpuModuleName, gpuFunctionName);
+            gpuEngine.loadFunktion("JCudaCalcDeltaPeaks", "calcDeltaPeaks");
+            gpuEngine.loadFunktion("JCudaCalcSingleMirror", "calcSingleMirror");
+            gpuInit = true;
         }
-        
-        gpuEngine.loadFunktion(gpuModuleName, gpuFunctionName);
-        gpuEngine.loadFunktion("JCudaCalcDeltaPeaks", "calcDeltaPeaks");
-        gpuEngine.loadFunktion("JCudaCalcSingleMirror", "calcSingleMirror");
-        gpuInit = true;
         
         int[] constantInts = new int[4];
         constantInts[0] = nrX;

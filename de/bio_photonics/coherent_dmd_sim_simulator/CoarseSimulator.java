@@ -195,9 +195,9 @@ public class CoarseSimulator extends AbstractSimulator {
         // creating meta data object
         MetaData meta = new MetaData();
         meta.outDir = "D:\\dmd-simulator-images\\";
-        meta.gpuActive = false;
+        meta.gpuActive = true;
         
-        int lambdaStart = 532;
+        int lambdaStart = 647;
         int lambdaEnd = 700;
         int lambdaStepSize = 100;
         int nrLambdas = (lambdaEnd - lambdaStart) / lambdaStepSize + 1;
@@ -207,8 +207,8 @@ public class CoarseSimulator extends AbstractSimulator {
             System.out.println(i + " " + meta.lambdas[i]);
         }
 
-        meta.nrX = 50;
-        meta.nrY = 50;
+        meta.nrX = 20;
+        meta.nrY = 20;
 
         meta.latticeConstant = 7.56;
         meta.fillFactor = 0.92;
@@ -216,17 +216,17 @@ public class CoarseSimulator extends AbstractSimulator {
 
         meta.beamDiameter = (int) (Math.min(meta.nrX, meta.nrY) * meta.latticeConstant / 2.0);
 
-        meta.phiOutStart = -15;
-        meta.phiOutEnd = 15;
-        meta.thetaOutStart = -15;
-        meta.thetaOutEnd = 15;
-        meta.outStepSize = 0.02;
+        meta.phiOutStart = -80;
+        meta.phiOutEnd = 80;
+        meta.thetaOutStart = -80;
+        meta.thetaOutEnd = 80;
+        meta.outStepSize = 0.1;
 
-        meta.phiInStart = -21;
-        meta.phiInEnd = -20;
-        meta.thetaInStart = 21;
-        meta.thetaInEnd = 22;
-        meta.inStepSize = 1.0;
+        meta.phiInStart = -45;
+        meta.phiInEnd = 45;
+        meta.thetaInStart = -45;
+        meta.thetaInEnd = 45;
+        meta.inStepSize = 0.2;
 
         //meta.bmp = Image.readBitmap("C:\\Users\\m.lachetta\\Downloads\\SLM_0,40_1,75_33_wl532_ang0_pha0.bmp");
         meta.bmp = new Image(meta.nrX, meta.nrY);
@@ -234,7 +234,7 @@ public class CoarseSimulator extends AbstractSimulator {
         //DmdSimulationCore dsc = new DmdSimulationCore(meta);
         
         
-        CoarseSimulator cs = new CoarseSimulator(meta, false, true);
+        CoarseSimulator cs = new CoarseSimulator(meta, false, false);
         cs.simulate();
     }
     

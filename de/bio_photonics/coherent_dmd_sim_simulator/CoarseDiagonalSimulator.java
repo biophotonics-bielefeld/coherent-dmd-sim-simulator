@@ -13,45 +13,11 @@ import de.bio_photonics.coherent_dmd_sim_simulator.DmdSimulationCore.MetaData;
  */
 public class CoarseDiagonalSimulator extends AbstractSimulator {
     
-    int lambdaStart, lambdaEnd, lambdaStepSize;
     boolean tiltState;
     
-    CoarseDiagonalSimulator(MetaData meta, int lambdaStart, int lambdaEnd, int lambdaStepSize, boolean tiltState) {
+    CoarseDiagonalSimulator(MetaData meta, boolean tiltState) {
         super(meta);
-        this.lambdaStart = lambdaStart;
-        this.lambdaEnd = lambdaEnd;
-        this.lambdaStepSize = lambdaStepSize;
         this.tiltState = tiltState;
-    }
-    
-    @Override
-    void simulate() {
-        int diagonalInSteps = (int) ((meta.phiInEnd - meta.phiInStart) / meta.inStepSize);
-        
-        int counter = 0;
-        Image epdByLambda = new Image(diagonalInSteps, meta.lambdas.length);
-        epdByLambda.setTitle(lambdaStart + "_" + lambdaEnd + "_epd_" + (int) (meta.tiltAngle*10));
-        epdByLambda.show();
-
-        int y = 0;
-        for(int lambda : meta.lambdas) {
-            System.out.println(lambda);
-            long startTime = System.currentTimeMillis();
-            double[] epdDiagonal = simulateDiagonal();
-            for(int x = 0; x < epdDiagonal.length; x++) {
-                System.out.println(x + " " + (lambda-lambdaStart) + " " + epdDiagonal[x]);
-                epdByLambda.set(x, y, (float) epdDiagonal[x]);
-            }
-            epdByLambda.repaint();
-            long endTime = System.currentTimeMillis();
-            int timeExpected = (int) ((endTime - startTime)*0.001/60 * (meta.lambdas.length - counter++));
-            y++;
-            System.out.println(timeExpected + " minutes left");
-        }
-        
-        
-            epdByLambda.saveAsTiff(meta.outDir + epdByLambda.getTitle() + ".tif", meta);
-            epdByLambda.close();
     }
     
     double[] simulateDiagonal() {
@@ -137,7 +103,7 @@ public class CoarseDiagonalSimulator extends AbstractSimulator {
         
         int lambdaStart = 400;
         int lambdaEnd = 700;
-        int lambdaStepSize = 100;
+        int lambdaStepSize = 1;
         int nrLambdas = (lambdaEnd - lambdaStart) / lambdaStepSize + 1;
         meta.lambdas = new int[(lambdaEnd - lambdaStart) / lambdaStepSize + 1];
         for (int i = 0; i < nrLambdas; i++) {
@@ -145,8 +111,8 @@ public class CoarseDiagonalSimulator extends AbstractSimulator {
             System.out.println(i + " " + meta.lambdas[i]);
         }
 
-        meta.nrX = 5;
-        meta.nrY = 5;
+        meta.nrX = 20;
+        meta.nrY = 20;
 
         meta.latticeConstant = 7.56;
         meta.fillFactor = 0.92;
@@ -154,17 +120,17 @@ public class CoarseDiagonalSimulator extends AbstractSimulator {
 
         meta.beamDiameter = (int) (Math.min(meta.nrX, meta.nrY) * meta.latticeConstant / 2.0);
 
-        meta.phiOutStart = -60;
-        meta.phiOutEnd = 60;
-        meta.thetaOutStart = -60;
-        meta.thetaOutEnd = 60;
-        meta.outStepSize = 0.2;
+        meta.phiOutStart = -80;
+        meta.phiOutEnd = 80;
+        meta.thetaOutStart = -80;
+        meta.thetaOutEnd = 80;
+        meta.outStepSize = 0.1;
 
-        meta.phiInStart = -45;
-        meta.phiInEnd = +45;
+        meta.phiInStart = -90;
+        meta.phiInEnd = 90;
         //meta.thetaInStart = -60;
         //meta.thetaInEnd = 60;
-        meta.inStepSize = 5.0;
+        meta.inStepSize = 0.2;
 
         //meta.bmp = Image.readBitmap("C:\\Users\\m.lachetta\\Downloads\\SLM_0,40_1,75_33_wl532_ang0_pha0.bmp");
         meta.bmp = new Image(meta.nrX, meta.nrY);
@@ -172,7 +138,41 @@ public class CoarseDiagonalSimulator extends AbstractSimulator {
         //DmdSimulationCore dsc = new DmdSimulationCore(meta);
         
         
-        CoarseDiagonalSimulator cds = new CoarseDiagonalSimulator(meta, lambdaStart, lambdaEnd, lambdaStepSize, false);
-        cds.simulate();
+//        CoarseDiagonalSimulator cds = new CoarseDiagonalSimulator(meta, lambdaStart, lambdaEnd, lambdaStepSize, false);
+//        cds.simulate();
+        
+        int diagonalInSteps = (int) ((meta.phiInEnd - meta.phiInStart) / meta.inStepSize);
+        
+        int counter = 0;
+        Image epdByLambda = new Image(diagonalInSteps, meta.lambdas.length);
+        epdByLambda.setTitle(lambdaStart + "_" + lambdaEnd + "_epd_" + (int) (meta.tiltAngle*10));
+        epdByLambda.show();
+
+        int y = 0;
+        for(int wavelength : meta.lambdas) {
+            System.out.println(wavelength);
+            long startTime = System.currentTimeMillis();
+            meta.lambdas[0] = wavelength;
+            CoarseDiagonalSimulator cds = new CoarseDiagonalSimulator(meta, false);
+            double[] epdDiagonal = cds.simulateDiagonal();
+            for(int x = 0; x < epdDiagonal.length; x++) {
+                System.out.println(x + " " + (wavelength-lambdaStart) + " " + epdDiagonal[x]);
+                epdByLambda.set(x, y, (float) epdDiagonal[x]);
+            }
+            epdByLambda.repaint();
+            long endTime = System.currentTimeMillis();
+            int timeExpected = (int) ((endTime - startTime)*0.001/60 * (meta.lambdas.length - counter++));
+            y++;
+            System.out.println(timeExpected + " minutes left");
+        }
+        
+        
+            epdByLambda.saveAsTiff(meta.outDir + epdByLambda.getTitle() + ".tif", meta);
+            epdByLambda.close();
+    }
+
+    @Override
+    void simulate() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

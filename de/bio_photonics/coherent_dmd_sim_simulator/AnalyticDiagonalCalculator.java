@@ -35,11 +35,11 @@ public class AnalyticDiagonalCalculator {
      */
     public static void main(String[] args) {
         DmdSimulationCore.MetaData meta = new DmdSimulationCore.MetaData();
-        meta.outDir = args[0] + "/";
-        meta.gpuActive = Boolean.valueOf(args[1]);
+        meta.outDir = "D:\\dmd-simulator-images\\";
+        meta.gpuActive = false;
         
-        int lambdaStart = Integer.parseInt(args[2]);
-        int lambdaEnd = Integer.parseInt(args[3]);
+        int lambdaStart = 400;
+        int lambdaEnd = 700;
         meta.lambdas = new int[lambdaEnd - lambdaStart + 1];
         for (int i = 0; i <= lambdaEnd-lambdaStart; i++) meta.lambdas[i] = lambdaStart + i;
 
@@ -48,7 +48,7 @@ public class AnalyticDiagonalCalculator {
 
         meta.latticeConstant = 7.56;
         //meta.fillFactor = 0.92;
-        meta.tiltAngle = -12.0;
+        meta.tiltAngle = 12.0;
 
         //meta.beamDiameter = (int) (Math.min(meta.nrX, meta.nrY) * meta.latticeConstant / 2.0);
 
@@ -62,7 +62,7 @@ public class AnalyticDiagonalCalculator {
         meta.phiInEnd = 90;
         //meta.thetaInStart = -60;
         //meta.thetaInEnd = 60;
-        meta.inStepSize = 0.05;
+        meta.inStepSize = 0.2;
 
         //meta.bmp = Image.readBitmap("C:\\Users\\m.lachetta\\Downloads\\SLM_0,40_1,75_33_wl532_ang0_pha0.bmp");
         //meta.bmp = new Image(meta.nrX, meta.nrY);
@@ -76,7 +76,7 @@ public class AnalyticDiagonalCalculator {
             int waveLength = meta.lambdas[y];
             for (int x = 0; x < width; x++) {
                 double phi = meta.phiInStart + meta.inStepSize * x;
-                double inAngle = phi;//Math.atan(Math.sqrt(2)*Math.tan(phi*Math.PI/180))*180/Math.PI;
+                double inAngle = /*phi;*/Math.atan(Math.sqrt(2)*Math.tan(phi*Math.PI/180))*180/Math.PI;
                 //System.out.println(inAngle + " " + meta.tiltAngle + " " + waveLength + " " + meta.latticeConstant);
                 double n = calcDiffractionOrder(inAngle, meta.tiltAngle, waveLength, meta.latticeConstant);
                 float value = (float) Math.sqrt(Math.pow(Math.sin(n*Math.PI), 2.0));
