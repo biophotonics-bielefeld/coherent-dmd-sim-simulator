@@ -197,7 +197,7 @@ public class CoarseSimulator extends AbstractSimulator {
         meta.outDir = "D:\\dmd-simulator-images\\";
         meta.gpuActive = true;
         
-        int lambdaStart = 647;
+        int lambdaStart = 488;
         int lambdaEnd = 700;
         int lambdaStepSize = 100;
         int nrLambdas = (lambdaEnd - lambdaStart) / lambdaStepSize + 1;

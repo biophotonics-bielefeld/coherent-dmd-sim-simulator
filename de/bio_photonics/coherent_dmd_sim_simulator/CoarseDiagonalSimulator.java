@@ -120,10 +120,10 @@ public class CoarseDiagonalSimulator extends AbstractSimulator {
 
         meta.beamDiameter = (int) (Math.min(meta.nrX, meta.nrY) * meta.latticeConstant / 2.0);
 
-        meta.phiOutStart = -80;
-        meta.phiOutEnd = 80;
-        meta.thetaOutStart = -80;
-        meta.thetaOutEnd = 80;
+        meta.phiOutStart = -90;
+        meta.phiOutEnd = 90;
+        meta.thetaOutStart = -90;
+        meta.thetaOutEnd = 90;
         meta.outStepSize = 0.1;
 
         meta.phiInStart = -90;

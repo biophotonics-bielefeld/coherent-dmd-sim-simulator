@@ -185,7 +185,7 @@ public class TwoColAnalyzer implements PlugIn {
 
     }
     
-    private static Map infoStringToMap(String info) {
+    static Map infoStringToMap(String info) {
         Map<String, String> map = new HashMap<>();
         String[] split = info.split("\n");
         for (int i = 0; i < split.length; i++) {
