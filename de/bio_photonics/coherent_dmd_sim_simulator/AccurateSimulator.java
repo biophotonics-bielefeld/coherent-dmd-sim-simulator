@@ -17,19 +17,19 @@ import ij.plugin.HyperStackConverter;
  */
 public class AccurateSimulator extends AbstractSimulator {
     
-    int interestingAreaInDegrees;
+    //int interestingAreaInDegrees;
     boolean saveImgs;
     
-    AccurateSimulator(MetaData meta, int interestingAreaInDegrees, boolean saveImgs) {
+    public AccurateSimulator(MetaData meta, boolean saveImgs) {
         super(meta);
-        this.interestingAreaInDegrees = interestingAreaInDegrees;
-        if (this.interestingAreaInDegrees <= 0) 
-            throw new RuntimeException("interestingAreaInDegrees has to be lager than 0"); 
+//        this.interestingAreaInDegrees = interestingAreaInDegrees;
+//        if (this.interestingAreaInDegrees <= 0) 
+//            throw new RuntimeException("interestingAreaInDegrees has to be lager than 0"); 
         this.saveImgs = saveImgs;
     }
     
     @Override
-    void simulate() {
+    public void simulate() {
         // init images for simulations
         Image intensity = new Image(width, height);
         Image phase = new Image(width, height);
@@ -70,7 +70,7 @@ public class AccurateSimulator extends AbstractSimulator {
                 inBeam.times(-1);
                 
                 // the actual simulation
-                Image[] simulateField = dsc.simulateFieldAccurate(inBeam, interestingAreaInDegrees);
+                Image[] simulateField = dsc.simulateFieldAccurate(inBeam);
                 
                 // add simulated images to stacks for saving
                 if (saveImgs) {
@@ -229,7 +229,7 @@ public class AccurateSimulator extends AbstractSimulator {
         //DmdSimulationCore dsc = new DmdSimulationCore(meta);
         
         
-        AccurateSimulator as = new AccurateSimulator(meta, 20, true);
+        AccurateSimulator as = new AccurateSimulator(meta, true);
         as.simulate();
     }
     

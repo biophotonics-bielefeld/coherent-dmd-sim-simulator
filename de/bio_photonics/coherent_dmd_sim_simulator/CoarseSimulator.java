@@ -6,6 +6,7 @@
 package de.bio_photonics.coherent_dmd_sim_simulator;
 
 import de.bio_photonics.coherent_dmd_sim_simulator.DmdSimulationCore.MetaData;
+import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.io.FileSaver;
@@ -19,14 +20,14 @@ public class CoarseSimulator extends AbstractSimulator {
     
     boolean tiltState, saveRaws;
     
-    CoarseSimulator(MetaData meta, boolean tiltState, boolean saveRaws) {
+    public CoarseSimulator(MetaData meta, boolean tiltState, boolean saveRaws) {
         super(meta);
         this.tiltState = tiltState;
         this.saveRaws = saveRaws;
     }
     
     @Override
-    void simulate() {
+    public void simulate() {
         // init images for simulations
         Image gratingPeaks = new Image(width, height);
         //Image intensityOn = new Image(width, height);
@@ -134,7 +135,7 @@ public class CoarseSimulator extends AbstractSimulator {
                             (float)((inCounter / (double) inSteps)) * 10000.0) * 0.01;
                     double memmory = (int) Math.round((float) (Runtime.getRuntime().totalMemory()
                             / (double) Runtime.getRuntime().maxMemory()) * 10000.0) * 0.01;
-                    System.out.println("phiIn " + phiIn + " ; thetaIn " + thetaIn
+                    IJ.log("phiIn " + phiIn + " ; thetaIn " + thetaIn
                             + " ; min " + expectedTime + " ; progress " + progres
                             + "%" + " ; memmory " + memmory + "%" + " ; fps " + 1./calcTime/60.);
                 }
@@ -216,16 +217,16 @@ public class CoarseSimulator extends AbstractSimulator {
 
         meta.beamDiameter = (int) (Math.min(meta.nrX, meta.nrY) * meta.latticeConstant / 2.0);
 
-        meta.phiOutStart = -80;
-        meta.phiOutEnd = 80;
-        meta.thetaOutStart = -80;
-        meta.thetaOutEnd = 80;
+        meta.phiOutStart = -90;
+        meta.phiOutEnd = 90;
+        meta.thetaOutStart = -90;
+        meta.thetaOutEnd = 90;
         meta.outStepSize = 0.1;
 
-        meta.phiInStart = -45;
-        meta.phiInEnd = 45;
-        meta.thetaInStart = -45;
-        meta.thetaInEnd = 45;
+        meta.phiInStart = -60;
+        meta.phiInEnd = 60;
+        meta.thetaInStart = -60;
+        meta.thetaInEnd = 60;
         meta.inStepSize = 0.2;
 
         //meta.bmp = Image.readBitmap("C:\\Users\\m.lachetta\\Downloads\\SLM_0,40_1,75_33_wl532_ang0_pha0.bmp");

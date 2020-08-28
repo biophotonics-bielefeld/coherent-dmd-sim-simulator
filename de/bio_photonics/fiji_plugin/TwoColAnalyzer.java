@@ -14,14 +14,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package de.bio_photonics.coherent_dmd_sim_simulator;
+package de.bio_photonics.fiji_plugin;
 
+import de.bio_photonics.coherent_dmd_sim_simulator.Utilities;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.GenericDialog;
 import ij.plugin.PlugIn;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -61,12 +61,12 @@ public class TwoColAnalyzer implements PlugIn {
         double oneColorThreshold = gd.getNextNumber();
         double towColorThreshold = gd.getNextNumber();
         
-        Map<String, String> phiOut1Meta = infoStringToMap(phiOut1.getInfoProperty());
-        Map<String, String> thetaOut1Meta = infoStringToMap(thetaOut1.getInfoProperty());
-        Map<String, String> epd1Meta = infoStringToMap(epd1.getInfoProperty());
-        Map<String, String> phiOut2Meta = infoStringToMap(phiOut2.getInfoProperty());
-        Map<String, String> thetaOut2Meta = infoStringToMap(thetaOut2.getInfoProperty());
-        Map<String, String> epd2Meta = infoStringToMap(epd2.getInfoProperty());
+        Map<String, String> phiOut1Meta = Utilities.infoStringToMap(phiOut1.getInfoProperty());
+        Map<String, String> thetaOut1Meta = Utilities.infoStringToMap(thetaOut1.getInfoProperty());
+        Map<String, String> epd1Meta = Utilities.infoStringToMap(epd1.getInfoProperty());
+        Map<String, String> phiOut2Meta = Utilities.infoStringToMap(phiOut2.getInfoProperty());
+        Map<String, String> thetaOut2Meta = Utilities.infoStringToMap(thetaOut2.getInfoProperty());
+        Map<String, String> epd2Meta = Utilities.infoStringToMap(epd2.getInfoProperty());
         
         double inStepSize;
         double phiInStart;
@@ -183,16 +183,6 @@ public class TwoColAnalyzer implements PlugIn {
 //        IJ.log(phiOut1Array[54][270] + " " + thetaOut1Array[54][270]);
 //        IJ.log(phiOut2Array[213][110] + " " + thetaOut2Array[213][110]);
 
-    }
-    
-    static Map infoStringToMap(String info) {
-        Map<String, String> map = new HashMap<>();
-        String[] split = info.split("\n");
-        for (int i = 0; i < split.length; i++) {
-            String[] kv = split[i].split(": ");
-            if (kv.length == 2) map.put(kv[0], kv[1]);
-        }
-        return map;
     }
     
     /** main method */

@@ -106,5 +106,5 @@ public abstract class AbstractSimulator {
                 beamDiameter, phiMin, phiMax, thetaMin, thetaMax, outStepSize, bmp);
     }
     
-    abstract void simulate();
+    abstract public void simulate();
 }

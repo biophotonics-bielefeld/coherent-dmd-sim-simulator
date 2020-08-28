@@ -5,6 +5,8 @@
  */
 package de.bio_photonics.coherent_dmd_sim_simulator;
 
+import ij.IJ;
+
 /**
  *
  * @author Mario
@@ -41,33 +43,33 @@ public class DmdSimulationCore {
     /**
      * class to handle meta data
      */
-    static class MetaData {
-        String outDir;
-        int[] lambdas;
-        boolean gpuActive;
-        int beamDiameter;
+    public static class MetaData {
+        public String outDir;
+        public int[] lambdas;
+        public boolean gpuActive;
+        public int beamDiameter;
         
-        int nrX;
-        int nrY;
+        public int nrX;
+        public int nrY;
         
-        double latticeConstant;
-        double fillFactor;
+        public double latticeConstant;
+        public double fillFactor;
         
-        double tiltAngle;
+        public double tiltAngle;
         
-        double phiOutStart;
-        double phiOutEnd;
-        double thetaOutStart;
-        double thetaOutEnd;
-        double outStepSize;
+        public double phiOutStart;
+        public double phiOutEnd;
+        public double thetaOutStart;
+        public double thetaOutEnd;
+        public double outStepSize;
         
-        double phiInStart;
-        double phiInEnd;
-        double thetaInStart;
-        double thetaInEnd;
-        double inStepSize;
+        public double phiInStart;
+        public double phiInEnd;
+        public double thetaInStart;
+        public double thetaInEnd;
+        public double inStepSize;
         
-        Image bmp;
+        public Image bmp;
         
         @Override
         public String toString() {
@@ -254,6 +256,7 @@ public class DmdSimulationCore {
      * sets a region of interest around the maximum in the reference field for calculations
      * @param rangeOfInterest in degree
      */
+    /*
     private void setInterestingArea(int rangeOfInterest) {
         double trueMax = -1;
         double falseMax = -1;
@@ -295,6 +298,7 @@ public class DmdSimulationCore {
         falsePhStart = checkPhRange(falsePhStart);
         falsePhEnd = checkPhRange(falsePhEnd);
     }
+    */
     
     private int checkThRange(int thValue) {
         if (thValue < 0) return 0;
@@ -469,13 +473,16 @@ public class DmdSimulationCore {
      * @see #calcCpuOutAngle(int, int) 
      */
     protected Complex[][] calcOutAngles() {
-        System.out.println(trueThStart + " " + trueThEnd + " " + truePhStart + " " + truePhEnd);
+        //System.out.println(trueThStart + " " + trueThEnd + " " + truePhStart + " " + truePhEnd);
         Complex[][] field = new Complex[tMax][pMax];
         for (int th = 0; th < tMax; th++) {
             for (int ph = 0; ph < pMax; ph++) {
-                field[th][ph] = new Complex(0, 0);
+                //field[th][ph] = new Complex(0, 0);
+                field[th][ph] = calcOutAngle(ph, th);
             }
+            IJ.log("Progress: " + (th + 1) + "/" + tMax);
         }
+        /*
         for (int th = trueThStart; th < trueThEnd; th++) {
             for (int ph = truePhStart; ph < truePhEnd; ph++) {
                 field[th][ph].add(calcOutAngle(ph, th));
@@ -486,6 +493,7 @@ public class DmdSimulationCore {
                 field[th][ph].add(calcOutAngle(ph, th));
             }
         }
+        */
         return field;
     }
     
@@ -600,11 +608,11 @@ public class DmdSimulationCore {
      * @return image array of
      * [0,1,2,3]=[intensity, true reference field, false reference field, phase]
      */
-    public Image[] simulateFieldAccurate(Vector inBeam, int interestingAreaInDegrees) {
+    public Image[] simulateFieldAccurate(Vector inBeam) {
         setInBeam(inBeam);
         mirrorTrue = calcAnalyticSingleMirror(true);
         mirrorFalse = calcAnalyticSingleMirror(false);
-        setInterestingArea(interestingAreaInDegrees);
+        //setInterestingArea(interestingAreaInDegrees);
         Complex[][] field = calcOutAngles();
         
         Image fieldIntensity = buildIntensityImage(field);

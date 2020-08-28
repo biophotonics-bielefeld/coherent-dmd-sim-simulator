@@ -14,8 +14,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package de.bio_photonics.coherent_dmd_sim_simulator;
+package de.bio_photonics.fiji_plugin;
 
+import de.bio_photonics.coherent_dmd_sim_simulator.Utilities;
+import de.bio_photonics.coherent_dmd_sim_simulator.Image;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.GenericDialog;
@@ -50,9 +52,9 @@ public class OneColAnalyzer implements PlugIn {
         ImagePlus epd1 = ij.WindowManager.getImage(gd.getNextChoice());
         double oneColorThreshold = gd.getNextNumber();
         
-        Map<String, String> phiOut1Meta = TwoColAnalyzer.infoStringToMap(phiOut1.getInfoProperty());
-        Map<String, String> thetaOut1Meta = TwoColAnalyzer.infoStringToMap(thetaOut1.getInfoProperty());
-        Map<String, String> epd1Meta = TwoColAnalyzer.infoStringToMap(epd1.getInfoProperty());
+        Map<String, String> phiOut1Meta = Utilities.infoStringToMap(phiOut1.getInfoProperty());
+        Map<String, String> thetaOut1Meta = Utilities.infoStringToMap(thetaOut1.getInfoProperty());
+        Map<String, String> epd1Meta = Utilities.infoStringToMap(epd1.getInfoProperty());
         
         double inStepSize;
         double phiInStart;

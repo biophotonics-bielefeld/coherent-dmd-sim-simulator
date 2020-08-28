@@ -6,6 +6,7 @@
 package de.bio_photonics.coherent_dmd_sim_simulator;
 
 import de.bio_photonics.coherent_dmd_sim_simulator.DmdSimulationCore.MetaData;
+import ij.IJ;
 
 /**
  *
@@ -163,7 +164,7 @@ public class CoarseDiagonalSimulator extends AbstractSimulator {
             long endTime = System.currentTimeMillis();
             int timeExpected = (int) ((endTime - startTime)*0.001/60 * (meta.lambdas.length - counter++));
             y++;
-            System.out.println(timeExpected + " minutes left");
+            IJ.log(timeExpected + " minutes left");
         }
         
         
@@ -172,7 +173,7 @@ public class CoarseDiagonalSimulator extends AbstractSimulator {
     }
 
     @Override
-    void simulate() {
+    public void simulate() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
