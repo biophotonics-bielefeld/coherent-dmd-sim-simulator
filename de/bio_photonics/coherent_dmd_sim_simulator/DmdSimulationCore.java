@@ -6,6 +6,7 @@
 package de.bio_photonics.coherent_dmd_sim_simulator;
 
 import ij.IJ;
+import java.util.stream.IntStream;
 
 /**
  *
@@ -476,10 +477,13 @@ public class DmdSimulationCore {
         //System.out.println(trueThStart + " " + trueThEnd + " " + truePhStart + " " + truePhEnd);
         Complex[][] field = new Complex[tMax][pMax];
         for (int th = 0; th < tMax; th++) {
-            for (int ph = 0; ph < pMax; ph++) {
-                //field[th][ph] = new Complex(0, 0);
-                field[th][ph] = calcOutAngle(ph, th);
-            }
+            final int finalTh = th;
+            IntStream pStream = IntStream.range(0, pMax).parallel();
+            pStream.forEach(ph -> field[finalTh][ph] = calcOutAngle(ph, finalTh));
+//            for (int ph = 0; ph < pMax; ph++) {
+//                //field[th][ph] = new Complex(0, 0);
+//                field[th][ph] = calcOutAngle(ph, th);
+//            }
             IJ.log("Progress: " + (th + 1) + "/" + tMax);
         }
         /*

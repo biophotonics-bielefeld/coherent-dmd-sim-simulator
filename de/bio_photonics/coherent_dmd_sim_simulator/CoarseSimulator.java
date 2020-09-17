@@ -198,7 +198,7 @@ public class CoarseSimulator extends AbstractSimulator {
         meta.outDir = "D:\\dmd-simulator-images\\";
         meta.gpuActive = true;
         
-        int lambdaStart = 488;
+        int lambdaStart = 561;
         int lambdaEnd = 700;
         int lambdaStepSize = 100;
         int nrLambdas = (lambdaEnd - lambdaStart) / lambdaStepSize + 1;
@@ -208,8 +208,8 @@ public class CoarseSimulator extends AbstractSimulator {
             System.out.println(i + " " + meta.lambdas[i]);
         }
 
-        meta.nrX = 20;
-        meta.nrY = 20;
+        meta.nrX = 50;
+        meta.nrY = 50;
 
         meta.latticeConstant = 7.56;
         meta.fillFactor = 0.92;
@@ -217,10 +217,10 @@ public class CoarseSimulator extends AbstractSimulator {
 
         meta.beamDiameter = (int) (Math.min(meta.nrX, meta.nrY) * meta.latticeConstant / 2.0);
 
-        meta.phiOutStart = -90;
-        meta.phiOutEnd = 90;
-        meta.thetaOutStart = -90;
-        meta.thetaOutEnd = 90;
+        meta.phiOutStart = -80;
+        meta.phiOutEnd = 80;
+        meta.thetaOutStart = -80;
+        meta.thetaOutEnd = 80;
         meta.outStepSize = 0.1;
 
         meta.phiInStart = -60;
@@ -234,8 +234,8 @@ public class CoarseSimulator extends AbstractSimulator {
         
         //DmdSimulationCore dsc = new DmdSimulationCore(meta);
         
-        
-        CoarseSimulator cs = new CoarseSimulator(meta, false, false);
+        boolean save = false;
+        CoarseSimulator cs = new CoarseSimulator(meta, false, save);
         cs.simulate();
     }
     

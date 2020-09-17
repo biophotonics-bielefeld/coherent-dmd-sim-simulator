@@ -25,9 +25,10 @@ public class AnalyticDiagonalCalculator {
     private static double calcDiffractionOrder(double inAngle, double tiltAngle, double waveLength, double latticeConstant) {
         double inAng = inAngle * Math.PI / 180;
         double tiltAng = tiltAngle * Math.PI / 180;
+        double outAng = -inAng + 2*tiltAng;
         double lambda = waveLength * 1e-9;
         double latConst = latticeConstant / Math.sqrt(2) * 1e-6;
-        return (Math.sin(inAng) + Math.sin(-inAng - 2*tiltAng)) * latConst / lambda;
+        return (Math.sin(inAng) + Math.sin(outAng)) * latConst / lambda;
     }
 
     /**
@@ -48,7 +49,7 @@ public class AnalyticDiagonalCalculator {
 
         meta.latticeConstant = 7.56;
         //meta.fillFactor = 0.92;
-        meta.tiltAngle = 12.0;
+        meta.tiltAngle = -12.0;
 
         //meta.beamDiameter = (int) (Math.min(meta.nrX, meta.nrY) * meta.latticeConstant / 2.0);
 
@@ -76,14 +77,14 @@ public class AnalyticDiagonalCalculator {
             int waveLength = meta.lambdas[y];
             for (int x = 0; x < width; x++) {
                 double phi = meta.phiInStart + meta.inStepSize * x;
-                double inAngle = /*phi;*/Math.atan(Math.sqrt(2)*Math.tan(phi*Math.PI/180))*180/Math.PI;
+                double alpha = phi;//Math.atan(Math.sqrt(2)*Math.tan(phi*Math.PI/180))*180/Math.PI;
                 //System.out.println(inAngle + " " + meta.tiltAngle + " " + waveLength + " " + meta.latticeConstant);
-                double n = calcDiffractionOrder(inAngle, meta.tiltAngle, waveLength, meta.latticeConstant);
+                double n = calcDiffractionOrder(alpha, meta.tiltAngle, waveLength, meta.latticeConstant);
                 float value = (float) Math.sqrt(Math.pow(Math.sin(n*Math.PI), 2.0));
                 //System.out.println(x + " " + y);
                 diagonalEpd.set(x, y, value);
                 
-                outAngle.set(x, y, (float) (-inAngle - 2*meta.tiltAngle));
+                outAngle.set(x, y, (float) (-alpha + 2*meta.tiltAngle));
             }
         }
         diagonalEpd.saveAsTiff(meta.outDir + diagonalEpd.getTitle() + ".tif", meta);

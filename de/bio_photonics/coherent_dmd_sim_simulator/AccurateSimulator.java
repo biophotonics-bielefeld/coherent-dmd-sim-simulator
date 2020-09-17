@@ -230,7 +230,9 @@ public class AccurateSimulator extends AbstractSimulator {
         
         
         AccurateSimulator as = new AccurateSimulator(meta, true);
+        long timeStart = System.currentTimeMillis();
         as.simulate();
+        System.out.println("Time in seconds: " + ((System.currentTimeMillis() - timeStart) * 0.001));
     }
     
 }

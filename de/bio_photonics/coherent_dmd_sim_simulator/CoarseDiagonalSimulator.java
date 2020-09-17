@@ -48,10 +48,10 @@ public class CoarseDiagonalSimulator extends AbstractSimulator {
         
         // simulating over all in angles
         for (int ph = 0; ph < phiInSteps; ph++) {
-            double phiIn = phiInStart + ph * inStepSize;
-
+            double phiIn = (phiInStart + ph * inStepSize) / 180. * Math.PI;
+            phiIn = Math.atan(1/Math.sqrt(2)*Math.tan(phiIn));
             // set in beam
-            Vector inBeam = new Vector(phiIn / 180. * Math.PI, -phiIn / 180. * Math.PI);
+            Vector inBeam = new Vector(phiIn, -phiIn);
             inBeam.times(-1);
 
             // the actual simulation

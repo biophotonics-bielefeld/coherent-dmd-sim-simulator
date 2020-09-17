@@ -26,24 +26,24 @@ public class AnalyticPhaseShifter implements PlugIn {
         
         GenericDialog gd = new GenericDialog("Analytic Phase Shifter");
         
-        gd.addMessage("Gelenerel Options");
+        gd.addMessage("General Options");
         //gd.addCheckbox("GPU Support", false);
-        gd.addStringField("Storing Directory", "D:\\dmd-simulator-images\\fiji-plugin-test", 100);
+        gd.addStringField("Storage Directory", "D:\\dmd-simulator-images\\fiji-plugin-test", 100);
         gd.addMessage("DMD Options");
-        gd.addNumericField("Nr mirrors X", 50, 0);
-        gd.addNumericField("Nr mirrors Y", 50, 0);
+        gd.addNumericField("No. mirrors X", 50, 0);
+        gd.addNumericField("No. mirrors Y", 50, 0);
         gd.addNumericField("Lattice Constant", 7.56, 3, 5, "µm");
         gd.addNumericField("Fill Factor", 0.92, 3);
-        gd.addNumericField("Mirrors Tilt Angle", 12.0, 2, 5, "°");
-        gd.addStringField("Tilt State BMP", "D:\\dmd-simulator-images\\interesting patterns\\circles-50.bmp", 100);
+        gd.addNumericField("Mirror Tilt Angle", 12.0, 2, 5, "°");
+        gd.addStringField("Tilt State Image (*.bmp)", "D:\\dmd-simulator-images\\interesting patterns\\circles-50.bmp", 100);
         
-        gd.addMessage("Incident Options");
+        gd.addMessage("Incidence Parameters");
         gd.addNumericField("Wavelength", 532, 0, 5, "nm");
         gd.addNumericField("Beam Size Multiplier", 0.5, 2);
         gd.addNumericField("Phi In", -21, 1, 5, "°");
         gd.addNumericField("Theta In", 21, 1, 5, "°");
         
-        gd.addMessage("Diffracted Options");
+        gd.addMessage("Diffraction Parameters");
         gd.addNumericField("Phi Out Start", -15, 1, 5, "°");
         gd.addNumericField("Phi Out End", 15, 1, 5, "°");
         gd.addNumericField("Theta Out Start", -15, 1, 5, "°");
@@ -51,6 +51,7 @@ public class AnalyticPhaseShifter implements PlugIn {
         gd.addNumericField("Out Step Size", 0.02, 3, 5, "°");
         
         gd.showDialog();
+        if (gd.wasCanceled()) return;
         
         meta = new MetaData();
         
