@@ -190,7 +190,7 @@ public class AccurateSimulator extends AbstractSimulator {
         // creating meta data object
         MetaData meta = new MetaData();
         meta.outDir = "D:\\dmd-simulator-images\\";
-        meta.gpuActive = false;
+        meta.gpuActive = true;
         
         int lambdaStart = 532;
         int lambdaEnd = 700;

@@ -74,6 +74,9 @@ public class CoarseSimulator extends AbstractSimulator {
             double thetaIn = thetaInStart + th * inStepSize;
             for (int ph = 0; ph < phiInSteps; ph++) {
                 double phiIn = phiInStart + ph * inStepSize;
+                int step = 0;
+                int nrSteps = thetaInSteps * phiInSteps;
+                IJ.log("Progress: " + step++ + "/" + nrSteps);
                 long startTime = System.currentTimeMillis();
                 
                 // set in beam
@@ -196,9 +199,9 @@ public class CoarseSimulator extends AbstractSimulator {
         // creating meta data object
         MetaData meta = new MetaData();
         meta.outDir = "D:\\dmd-simulator-images\\";
-        meta.gpuActive = true;
+        meta.gpuActive = false;
         
-        int lambdaStart = 561;
+        int lambdaStart = 532;
         int lambdaEnd = 700;
         int lambdaStepSize = 100;
         int nrLambdas = (lambdaEnd - lambdaStart) / lambdaStepSize + 1;
@@ -236,7 +239,9 @@ public class CoarseSimulator extends AbstractSimulator {
         
         boolean save = false;
         CoarseSimulator cs = new CoarseSimulator(meta, false, save);
+        long timeStart = System.currentTimeMillis();
         cs.simulate();
+        System.out.println("Time in seconds: " + ((System.currentTimeMillis() - timeStart) * 0.001));
     }
     
 }
