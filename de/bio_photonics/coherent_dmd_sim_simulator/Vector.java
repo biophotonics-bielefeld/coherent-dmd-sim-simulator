@@ -104,6 +104,14 @@ public class Vector {
         z += v.z;
     }
     
+    public static Vector add(Vector v1, Vector v2) {
+        return new Vector(v1.x+v2.x, v1.y+v2.y, v1.z+v2.z);
+    }
+    
+    public static Vector minus(Vector v1, Vector v2) {
+        return new Vector(v1.x-v2.x, v1.y-v2.y, v1.z-v2.z);
+    }
+    
     /**
      * calculates the dot product
      * @param v the other vector
@@ -123,6 +131,10 @@ public class Vector {
         z *= a;
     }
     
+    public static Vector times(double a, Vector v) {
+        return new Vector(a*v.x, a*v.y, a*v.z);
+    }
+    
     /**
      * divides this vector by a scalar
      * @param a 
@@ -132,12 +144,16 @@ public class Vector {
         times((1.0 / a));
     }
     
+    public double getAbs() {
+        return x*x+y*y+z*z;
+    }
+    
     /**
      * calculates length with the 2-norm
      * @return length of this vector
      */
     public double getNorm() {
-        return Math.sqrt(x*x+y*y+z*z);
+        return Math.sqrt(getAbs());
     }
     
     /**
@@ -145,6 +161,11 @@ public class Vector {
      */
     public void normalize() {
         divide(getNorm());
+    }
+    
+    public Vector projectOnPlane(Vector planeNormal) {
+        double t = - (this.times(planeNormal)) / getAbs();
+        return add(this, times(t, planeNormal));
     }
     
     /**
