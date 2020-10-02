@@ -24,7 +24,7 @@ public class RayTracingApproach implements PlugIn {
     @Override
     public void run(String string) {
         
-        GenericDialog gd1 = new GenericDialog("Grating Approach");
+        GenericDialog gd1 = new GenericDialog("Ray Tracing Approach");
         
         gd1.addMessage("General Options");
         //gd.addCheckbox("GPU Support", false);
@@ -34,7 +34,8 @@ public class RayTracingApproach implements PlugIn {
         gd1.addNumericField("No. mirrors Y", 50, 0);
         gd1.addNumericField("Lattice Constant", 7.56, 3, 5, "µm");
         gd1.addNumericField("Fill Factor", 0.92, 3);
-        gd1.addNumericField("All Mirrors Tilt Angle", -12.0, 2, 5, "°");
+        gd1.addNumericField("Mirror Tilt Angle", 12.0, 2, 5, "°");
+        gd1.addStringField("Tilt State Image (*.bmp)", "D:\\dmd-simulator-images\\interesting patterns\\circles-50.bmp", 100);
         
         gd1.addMessage("Incidence Parameters");
         gd1.addNumericField("Wavelength", 532, 0, 5, "nm");
@@ -70,7 +71,14 @@ public class RayTracingApproach implements PlugIn {
         meta.latticeConstant = gd1.getNextNumber();
         meta.fillFactor = gd1.getNextNumber();
         meta.tiltAngle = gd1.getNextNumber();
-        meta.bmp = new Image(meta.nrX, meta.nrY);
+        String bmpString = gd1.getNextString();
+        f = new File(bmpString);
+        if (!(f.exists() && f.isFile())) {
+            String message = bmpString + " is not a file";
+            IJ.error(message);
+            throw new RuntimeException(message);
+        }
+        meta.bmp = Image.readBitmap(bmpString);
         
         meta.lambdas = new int[]{(int) gd1.getNextNumber()};
         meta.beamDiameter = (int) (Math.min(meta.nrX, meta.nrY) * meta.latticeConstant * gd1.getNextNumber());

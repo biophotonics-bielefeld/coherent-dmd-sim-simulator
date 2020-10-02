@@ -24,7 +24,7 @@ public class AnalyticPhaseShifter implements PlugIn {
     @Override
     public void run(String string) {
         
-        GenericDialog gd = new GenericDialog("Analytic Phase Shifter");
+        GenericDialog gd = new GenericDialog("Analytic Phase Shifting Approach");
         
         gd.addMessage("General Options");
         //gd.addCheckbox("GPU Support", false);

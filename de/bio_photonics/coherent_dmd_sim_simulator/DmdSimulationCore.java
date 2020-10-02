@@ -14,7 +14,7 @@ import java.util.stream.IntStream;
  */
 public class DmdSimulationCore {
     int nrX, nrY, pMax, tMax;
-    double lambda, beamDiameter, mirrorSize, gap, thetaMinD, thetaMinR,
+    double lambdaUm, beamDiameter, mirrorSize, gap, thetaMinD, thetaMinR,
             thetaMaxD, thetaMaxR, phiMinD, phiMinR, phiMaxD, phiMaxR,
             outStepSizeD, outStepSizeR, tiltD;
     Dmd dmd;
@@ -103,7 +103,7 @@ public class DmdSimulationCore {
      * 
      * @param dmd dmd object
      * @param tiltAngle tilt angle of the mirrors in degree
-     * @param lambda wavelength of the incident beam in µm
+     * @param lambdaUm wavelength of the incident beam in µm
      * @param beamDiameter in µm
      * @param phMin start out angle of x in degree
      * @param phMax end out angle of x in degree
@@ -112,7 +112,7 @@ public class DmdSimulationCore {
      * @param stepSize step size of out angles
      * @param flipStates bitmap (1/0;true/false) image for flip states of the mirrors on the dmd
      */
-    DmdSimulationCore(Dmd dmd, double tiltAngle, double lambda,
+    DmdSimulationCore(Dmd dmd, double tiltAngle, double lambdaUm,
             double beamDiameter, double phMin, double phMax, double thMin,
             double thMax, double stepSize, Image flipStates) {
         this.dmd = dmd;
@@ -126,7 +126,7 @@ public class DmdSimulationCore {
         
         this.tiltD = tiltAngle;
         
-        this.lambda = lambda;
+        this.lambdaUm = lambdaUm;
         this.beamDiameter = beamDiameter;
         this.phiMinD = phMin;
         this.phiMaxD = phMax;
@@ -147,7 +147,7 @@ public class DmdSimulationCore {
         
         this.dmd = new Dmd(nrX, nrY, meta.latticeConstant, gap);
         
-        this.lambda = meta.lambdas[0];
+        this.lambdaUm = meta.lambdas[0];
         this.beamDiameter = meta.beamDiameter;
         this.phiMinD = meta.phiOutStart;
         this.phiMaxD = meta.phiOutEnd;
@@ -335,22 +335,21 @@ public class DmdSimulationCore {
                 Vector out = new Vector(phi, theta);
                 double bx = out.getX();
                 double by = out.getY();
-                
-                double arg0 = -((2*m*(bx*mx+by*my)*pi)/lambda);
-                double arg1 = (2*ax*m*(1+mx)*pi)/lambda;
-                double arg2 = (2*bx*m*(1+mx)*pi)/lambda;
-                double arg3 = (2*ay*m*(1+my)*pi)/lambda;
-                double arg4 = (2*by*m*(1+my)*pi)/lambda;
-                double arg5 = (2*ax*m*pi)/lambda;
-                double arg6 = (2*bx*m*pi)/lambda;
-                double arg7 = (2*ay*m*pi)/lambda;
-                double arg8 = (2*by*m*pi)/lambda;
+                double arg0 = -((2*m*(bx*mx+by*my)*pi)/lambdaUm);
+                double arg1 = (2*ax*m*(1+mx)*pi)/lambdaUm;
+                double arg2 = (2*bx*m*(1+mx)*pi)/lambdaUm;
+                double arg3 = (2*ay*m*(1+my)*pi)/lambdaUm;
+                double arg4 = (2*by*m*(1+my)*pi)/lambdaUm;
+                double arg5 = (2*ax*m*pi)/lambdaUm;
+                double arg6 = (2*bx*m*pi)/lambdaUm;
+                double arg7 = (2*ay*m*pi)/lambdaUm;
+                double arg8 = (2*by*m*pi)/lambdaUm;
                 
                 boolean carryOn = true;
                 if (ax == bx) {
-                    arg0 = -((2*by*m*my*pi)/lambda);
+                    arg0 = -((2*by*m*my*pi)/lambdaUm);
                 } else if (ay == by) {
-                    arg0 = -((2*bx*m*mx*pi)/lambda);
+                    arg0 = -((2*bx*m*mx*pi)/lambdaUm);
                 } else if (ax == bx && ay == by) {
                     field[finalTh][ph] = new Complex(nrX*nrY, 0);
                     carryOn = false;
@@ -503,13 +502,13 @@ public class DmdSimulationCore {
         double ca = Math.cos(alpha);
         double sa = Math.sin(alpha);
         
-        double r0 = lambda*lambda;
+        double r0 = lambdaUm*lambdaUm;
         double r1 = Math.PI*Math.PI;
         double r2 = ax+ay-bx-by+(ax-ay-bx+by)*ca-s2*(az-bz)*sa;
         double r3 = -ax-ay+bx+by+(ax-ay-bx+by)*ca-s2*(az-bz)*sa;
         double r = r0/r1/r2/r3;
         
-        double argFactor = Math.PI/lambda;
+        double argFactor = Math.PI/lambdaUm;
         double arg0 = 0;
         double arg1 = (2*ax*m+2*ay*m-2*bx*m-2*by*m)*argFactor;
         double arg2 = (ax*m+ay*m-bx*m-by*m+(ax-ay-bx+by)*m*ca-s2*(az-bz)*m*sa)*argFactor;
@@ -586,7 +585,7 @@ public class DmdSimulationCore {
                 Vector out = outAngles[th][ph];
                 double outPathLength = calcOutOffsetPathLength(mx, my, out);
                 double additionalPl = initInPathLength + outPathLength;
-                double additionalPhase = (additionalPl / lambda) * 2 * Math.PI;
+                double additionalPhase = (additionalPl / lambdaUm) * 2 * Math.PI;
                 Complex referenceField = referenceMirror[th][ph];
                 double r = referenceField.abs() * gaussians[my][mx];
                 double p = referenceField.arg() + additionalPhase;

@@ -6,6 +6,9 @@
 package de.bio_photonics.coherent_dmd_sim_simulator;
 
 import ij.IJ;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Random;
 import java.util.stream.IntStream;
 
@@ -65,23 +68,24 @@ public class RayTracingSimulator extends AbstractSimulator {
         double hy = r.supportVec.getY();
         double hz = r.supportVec.getZ();
         double m = meta.latticeConstant;
-        double gamma = tiltAngle / 180.0 * Math.PI;
+        double gammaD = dsc.tiltStates[my][mx] ? tiltAngle : -tiltAngle;
+        double gammaR = gammaD /180.0 * Math.PI;
         
-        double denominator = (2*az*Math.cos(gamma)+Math.sqrt(2)*ax*Math.sin(gamma)-Math.sqrt(2)*ay*Math.sin(gamma));
-        double s = -(((-ay*hz-az*(-hy+m*my))*(-(1/2)*az*(1-Math.cos(gamma))+(ax*Math.sin(gamma))/Math.sqrt(2))-(-ax*hz-az*(-hx+m*mx))*(-az*(1/2*(1-Math.cos(gamma))+Math.cos(gamma))+(ay*Math.sin(gamma))/Math.sqrt(2)))
-                /(-az*az*Math.cos(gamma)-(ax*az*Math.sin(gamma))/Math.sqrt(2)+(ay*az*Math.sin(gamma))/Math.sqrt(2)));
-        double t = -((az*hx-az*hy-ax*hz+ay*hz-az*m*mx+az*m*my-az*hx*Math.cos(gamma)-az*hy*Math.cos(gamma)+ax*hz*Math.cos(gamma)+ay*hz*Math.cos(gamma)+az*m*mx*Math.cos(gamma)+az*m*my*Math.cos(gamma)+Math.sqrt(2)*ay*hx*Math.sin(gamma)-Math.sqrt(2)*ax*hy*Math.sin(gamma)-Math.sqrt(2)*ay*m*mx*Math.sin(gamma)+Math.sqrt(2)*ax*m*my*Math.sin(gamma))
+        double denominator = (2*az*Math.cos(gammaR)+Math.sqrt(2)*ax*Math.sin(gammaR)-Math.sqrt(2)*ay*Math.sin(gammaR));
+        double s = -(((-ay*hz-az*(-hy+m*my))*(-(1/2)*az*(1-Math.cos(gammaR))+(ax*Math.sin(gammaR))/Math.sqrt(2))-(-ax*hz-az*(-hx+m*mx))*(-az*(1/2*(1-Math.cos(gammaR))+Math.cos(gammaR))+(ay*Math.sin(gammaR))/Math.sqrt(2)))
+                /(-az*az*Math.cos(gammaR)-(ax*az*Math.sin(gammaR))/Math.sqrt(2)+(ay*az*Math.sin(gammaR))/Math.sqrt(2)));
+        double t = -((az*hx-az*hy-ax*hz+ay*hz-az*m*mx+az*m*my-az*hx*Math.cos(gammaR)-az*hy*Math.cos(gammaR)+ax*hz*Math.cos(gammaR)+ay*hz*Math.cos(gammaR)+az*m*mx*Math.cos(gammaR)+az*m*my*Math.cos(gammaR)+Math.sqrt(2)*ay*hx*Math.sin(gammaR)-Math.sqrt(2)*ax*hy*Math.sin(gammaR)-Math.sqrt(2)*ay*m*mx*Math.sin(gammaR)+Math.sqrt(2)*ax*m*my*Math.sin(gammaR))
                 /denominator);
-        double u = -((2*hz*Math.cos(gamma)+Math.sqrt(2)*hx*Math.sin(gamma)-Math.sqrt(2)*hy*Math.sin(gamma)-Math.sqrt(2)*m*mx*Math.sin(gamma)+Math.sqrt(2)*m*my*Math.sin(gamma))
+        double u = -((2*hz*Math.cos(gammaR)+Math.sqrt(2)*hx*Math.sin(gammaR)-Math.sqrt(2)*hy*Math.sin(gammaR)-Math.sqrt(2)*m*mx*Math.sin(gammaR)+Math.sqrt(2)*m*my*Math.sin(gammaR))
                 /denominator);
         
-        return new double[]{s,t,u};
+        return new double[]{s,t,u, gammaD};
     }
     
     Vector findValidIntersection(Ray r) {
         double smallestU  = Double.MAX_VALUE;
         int finalMx = -1, finalMy = -1;
-        double finalS = -1, finalT = -1;
+        double finalS = -1, finalT = -1, finalGamma = 0;
         for (int my = 0; my < nrY; my++) {
             for (int mx = 0; mx < nrY; mx++) {
                 double[] intersection = calcIntersection(r, mx, my);
@@ -96,12 +100,13 @@ public class RayTracingSimulator extends AbstractSimulator {
                     finalMy = my;
                     finalS = s;
                     finalT = t;
+                    finalGamma = intersection[3];
                     //System.out.println(smallestU + " " + finalMx + " " + finalMy + " " + finalS + " " + finalT);
                 }
             }
         }
         if (finalMx >= 0 && finalMy >= 0) {
-            Vector validIntersection = dsc.dmd.getCoordinates(finalMx, finalMy, tiltAngle, finalS, finalT);
+            Vector validIntersection = dsc.dmd.getCoordinates(finalMx, finalMy, finalGamma, finalS, finalT);
             //System.out.println(validIntersection.getX() + "\t" + validIntersection.getY() + "\t" + validIntersection.getZ());
             return validIntersection;
         } else return null;
@@ -115,13 +120,34 @@ public class RayTracingSimulator extends AbstractSimulator {
         inBeam.times(-1);
         //Ray[] rays = new Ray[nrRays];
         Vector[] intersections = new Vector[nrRays];
+        
+        IntStream intersectionStream = IntStream.range(0, nrRays);
+        intersectionStream.forEach(ray -> {
+            Ray r = Ray.createGaussianRandomRay(inBeam, beamDiameter);
+            r.supportVec.setX(r.supportVec.getX() + dsc.dmd.dmdWidth/2);
+            r.supportVec.setY(r.supportVec.getY() + dsc.dmd.dmdHeight/2);
+            intersections[ray] = findValidIntersection(r);
+        });
+        try {
+            FileWriter fw = new FileWriter("D:\\dmd-simulator-images\\diff_points.txt");
+            for(Vector inters : intersections) {
+                if (inters == null) continue;
+                //System.out.println(inters.getX() + "\t" + inters.getY() + "\t" + inters.getZ());
+                fw.write(inters.getX() + "\t" + inters.getY() + "\t" + inters.getZ() + "\n");
+            }
+            fw.close();
+        } catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+        /*
         for (int ray = 0; ray < nrRays; ray++) {
             Ray r = Ray.createGaussianRandomRay(inBeam, beamDiameter);
             r.supportVec.setX(r.supportVec.getX() + dsc.dmd.dmdWidth/2);
             r.supportVec.setY(r.supportVec.getY() + dsc.dmd.dmdHeight/2);
             intersections[ray] = findValidIntersection(r);
         }
-        
+        */
         // init images for simulations
         Image intensity = new Image(width, height);
         //Image phase = new Image(width, height);
@@ -168,7 +194,8 @@ public class RayTracingSimulator extends AbstractSimulator {
             
             
         }
-        
+        intensity.set(DmdSimulationCore.buildIntensityImage(field));
+        intensity.repaint();
         intensity.saveAsTiff(outDir + lambda + "_ray_intensity.tif", meta);
         //phase.saveAsTiff(outDir + lambda + "_ray_phase.tif", meta);
         
@@ -198,14 +225,14 @@ public class RayTracingSimulator extends AbstractSimulator {
 
         meta.latticeConstant = 7.56;
         meta.fillFactor = 0.92;
-        meta.tiltAngle = -12.0;
+        meta.tiltAngle = 12.0;
 
         meta.beamDiameter = (int) (Math.min(meta.nrX, meta.nrY) * meta.latticeConstant / 2.0);
 
-        meta.phiOutStart = -15;
-        meta.phiOutEnd = 15;
-        meta.thetaOutStart = -15;
-        meta.thetaOutEnd = 15;
+        meta.phiOutStart = -1.8;
+        meta.phiOutEnd = 8.2;
+        meta.thetaOutStart = -8.2;
+        meta.thetaOutEnd = 1.8;
         meta.outStepSize = 0.02;
 
         meta.phiInStart = -21;
@@ -214,9 +241,11 @@ public class RayTracingSimulator extends AbstractSimulator {
         meta.thetaInEnd = 22;
         meta.inStepSize = 1.0;
         
-        meta.bmp = new Image(meta.nrX, meta.nrY);
+        meta.bmp = Image.readBitmap("D:\\dmd-simulator-images\\interesting patterns\\dots-tri-50.bmp");
+        //meta.bmp = new Image(meta.nrX, meta.nrY);
+        //meta.bmp.setAll(1);
         
-        int nrOfRays = 100000;
+        int nrOfRays = 10000;
         RayTracingSimulator rts = new RayTracingSimulator(meta, nrOfRays);
         long timeStart = System.currentTimeMillis();
         rts.simulate();

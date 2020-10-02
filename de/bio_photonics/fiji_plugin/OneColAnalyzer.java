@@ -32,7 +32,7 @@ public class OneColAnalyzer implements PlugIn {
 
     @Override
     public void run(String arg) {
-        GenericDialog gd = new GenericDialog("OneColAnalyzer");
+        GenericDialog gd = new GenericDialog("Diffraction Space Analysis");
         gd.addMessage("Choose images");
         String[] openWindows = ij.WindowManager.getImageTitles();
         if (openWindows.length < 3) {

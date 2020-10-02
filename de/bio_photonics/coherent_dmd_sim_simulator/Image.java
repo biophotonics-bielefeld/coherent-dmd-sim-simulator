@@ -302,7 +302,7 @@ public class Image {
      * @param outfile path to save this image
      * @param meta meta object
      */
-    void saveAsTiff(String outfile, DmdSimulationCore.MetaData meta) {
+    public void saveAsTiff(String outfile, DmdSimulationCore.MetaData meta) {
         update();
         ip.setProperty("Info", meta.toString());
         new FileSaver(ip).saveAsTiff(outfile);

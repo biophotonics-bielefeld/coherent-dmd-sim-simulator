@@ -22,7 +22,7 @@ package de.bio_photonics.coherent_dmd_sim_simulator;
  */
 public class AnalyticDiagonalCalculator {
     
-    private static double calcDiffractionOrder(double inAngle, double tiltAngle, double waveLength, double latticeConstant) {
+    public static double calcDiffractionOrder(double inAngle, double tiltAngle, double waveLength, double latticeConstant) {
         double inAng = inAngle * Math.PI / 180;
         double tiltAng = tiltAngle * Math.PI / 180;
         double outAng = -inAng + 2*tiltAng;

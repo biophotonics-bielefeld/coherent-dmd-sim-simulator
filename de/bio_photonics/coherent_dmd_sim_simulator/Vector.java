@@ -164,7 +164,7 @@ public class Vector {
     }
     
     public Vector projectOnPlane(Vector planeNormal) {
-        double t = - (this.times(planeNormal)) / getAbs();
+        double t = - (this.times(planeNormal)) / planeNormal.getAbs();
         return add(this, times(t, planeNormal));
     }
     

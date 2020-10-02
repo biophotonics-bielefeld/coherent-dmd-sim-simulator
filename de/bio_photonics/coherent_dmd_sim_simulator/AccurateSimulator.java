@@ -211,21 +211,20 @@ public class AccurateSimulator extends AbstractSimulator {
 
         meta.beamDiameter = (int) (Math.min(meta.nrX, meta.nrY) * meta.latticeConstant / 2.0);
 
-        meta.phiOutStart = -15;
-        meta.phiOutEnd = 15;
-        meta.thetaOutStart = -15;
-        meta.thetaOutEnd = 15;
+        meta.phiOutStart = -30;
+        meta.phiOutEnd = 30;
+        meta.thetaOutStart = -30;
+        meta.thetaOutEnd = 30;
         meta.outStepSize = 0.02;
 
-        meta.phiInStart = -21;
-        meta.phiInEnd = -20;
-        meta.thetaInStart = 21;
-        meta.thetaInEnd = 22;
+        meta.phiInStart = 0;
+        meta.phiInEnd = 1;
+        meta.thetaInStart = 0;
+        meta.thetaInEnd = 1;
         meta.inStepSize = 1.0;
 
-        //meta.bmp = Image.readBitmap("D:\\dmd-simulator-images\\interesting patterns\\circles-50.bmp");
-        meta.bmp = new Image(meta.nrX, meta.nrY);
-        
+        meta.bmp = Image.readBitmap("D:\\dmd-simulator-images\\interesting patterns\\lines-50.bmp");
+        //meta.bmp = new Image(meta.nrX, meta.nrY);
         //DmdSimulationCore dsc = new DmdSimulationCore(meta);
         
         

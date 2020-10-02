@@ -88,7 +88,7 @@ public class GpuDmdSimulationCore extends DmdSimulationCore {
         constantFloats[5] = (float) mirrorSize;
         constantFloats[6] = (float) gap;
         constantFloats[7] = (float) tiltD;
-        constantFloats[8] = (float) lambda;
+        constantFloats[8] = (float) lambdaUm;
         constantFloats[9] = (float) beamDiameter;
         constantFloats[10] = (float) referencePosition.getX();
         constantFloats[11] = (float) referencePosition.getY();
