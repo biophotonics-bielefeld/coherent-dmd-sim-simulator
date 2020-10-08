@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 m.lachetta
+ * This file is part of the coherent_dmd_cimulator.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package de.bio_photonics.dmd_ray_tracer.jcuda;
+package de.bio_photonics.coherent_dmd_sim_simulator.jcuda;
 
 import de.bio_photonics.coherent_dmd_sim_simulator.Complex;
 import de.bio_photonics.coherent_dmd_sim_simulator.Vector;

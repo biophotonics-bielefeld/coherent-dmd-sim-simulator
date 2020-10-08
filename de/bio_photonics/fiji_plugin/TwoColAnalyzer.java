@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 m.lachetta
+ * This file is part of the coherent_dmd_cimulator.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
  */
 package de.bio_photonics.fiji_plugin;
 
-import de.bio_photonics.coherent_dmd_sim_simulator.Utilities;
+import de.bio_photonics.coherent_dmd_sim_simulator.DmdSimulationCore;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.GenericDialog;
@@ -61,12 +61,12 @@ public class TwoColAnalyzer implements PlugIn {
         double oneColorThreshold = gd.getNextNumber();
         double towColorThreshold = gd.getNextNumber();
         
-        Map<String, String> phiOut1Meta = Utilities.infoStringToMap(phiOut1.getInfoProperty());
-        Map<String, String> thetaOut1Meta = Utilities.infoStringToMap(thetaOut1.getInfoProperty());
-        Map<String, String> epd1Meta = Utilities.infoStringToMap(epd1.getInfoProperty());
-        Map<String, String> phiOut2Meta = Utilities.infoStringToMap(phiOut2.getInfoProperty());
-        Map<String, String> thetaOut2Meta = Utilities.infoStringToMap(thetaOut2.getInfoProperty());
-        Map<String, String> epd2Meta = Utilities.infoStringToMap(epd2.getInfoProperty());
+        Map<String, String> phiOut1Meta = DmdSimulationCore.MetaData.infoStringToMap(phiOut1.getInfoProperty());
+        Map<String, String> thetaOut1Meta = DmdSimulationCore.MetaData.infoStringToMap(thetaOut1.getInfoProperty());
+        Map<String, String> epd1Meta = DmdSimulationCore.MetaData.infoStringToMap(epd1.getInfoProperty());
+        Map<String, String> phiOut2Meta = DmdSimulationCore.MetaData.infoStringToMap(phiOut2.getInfoProperty());
+        Map<String, String> thetaOut2Meta = DmdSimulationCore.MetaData.infoStringToMap(thetaOut2.getInfoProperty());
+        Map<String, String> epd2Meta = DmdSimulationCore.MetaData.infoStringToMap(epd2.getInfoProperty());
         
         double inStepSize;
         double phiInStart;
