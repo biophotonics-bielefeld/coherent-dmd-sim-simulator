@@ -34,6 +34,10 @@ public class Vector {
         set(x,y,z);
     }
     
+    public Vector createCopy() {
+        return new Vector(x, y, z);
+    }
+    
     /**
      * Creates a normalized Vector dependent on the incidence/reflection angle
      * x = z * tan(phi);
@@ -52,7 +56,7 @@ public class Vector {
     
     @Override
     public String toString() {
-        return "{" + x + "," + y + "," + z + "}";
+        return x + "\t" + y + "\t" + z;
     }
     
     public void set(double x, double y, double z) {
@@ -117,7 +121,7 @@ public class Vector {
      * @param v the other vector
      * @return dot product
      */
-    public double times(Vector v) {
+    public double dotProduct(Vector v) {
         return x * v.x + y * v.y + z * v.z;
     }
     
@@ -164,8 +168,20 @@ public class Vector {
     }
     
     public Vector projectOnPlane(Vector planeNormal) {
-        double t = - (this.times(planeNormal)) / planeNormal.getAbs();
+        double t = - (this.dotProduct(planeNormal)) / planeNormal.getAbs();
         return add(this, times(t, planeNormal));
+    }
+    
+    
+    
+    public static Vector[] getOrthoNormalBasis(Vector w1, Vector w2, Vector w3) {
+        Vector v1 = w1.createCopy();
+        v1.normalize();
+        Vector v2 = minus(w2, times(v1.dotProduct(w2), v1));
+        v2.normalize();
+        Vector v3 = minus(minus(w3, times(v1.dotProduct(w3), v1)), times(v2.dotProduct(w3), v2));
+        v3.normalize();
+        return new Vector[]{v1, v2, v3};
     }
     
     /**
@@ -173,8 +189,19 @@ public class Vector {
      * @param args 
      */
     public static void main(String[] args) {
-        Vector v = new Vector(Math.PI*0.25, Math.PI*0.25);
+        Vector v = new Vector(Math.PI*0.25, Math.PI*0.25*2);
         System.out.println(v);
+        Vector[] basis = getOrthoNormalBasis(v, new Vector(1,0,0), new Vector(0,1,0));
+        Vector v1 = basis[0];
+        Vector v2 = basis[1];
+        Vector v3 = basis[2];
+        System.out.println(v1);
+        System.out.println(v2);
+        System.out.println(v3);
+        System.out.println("");
+        System.out.println(v1.dotProduct(v2));
+        System.out.println(v1.dotProduct(v3));
+        System.out.println(v2.dotProduct(v3));
     }
     
 }

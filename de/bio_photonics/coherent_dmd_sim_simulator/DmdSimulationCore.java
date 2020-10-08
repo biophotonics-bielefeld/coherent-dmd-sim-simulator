@@ -527,7 +527,7 @@ public class DmdSimulationCore {
         double ny = -nx;
         double nz = Math.sqrt(1-sa*sa);
         Vector n = new Vector(nx,ny,nz);
-        double intesityFactor = Math.abs(inBeam.times(n));
+        double intesityFactor = Math.abs(inBeam.dotProduct(n));
         
         double re = intesityFactor * r * (re0 + re1 - re2 - re3);
         double im = intesityFactor * r * (im0 + im1 - im2 - im3);
@@ -619,7 +619,7 @@ public class DmdSimulationCore {
     private double calcInOffsetPathLength(int mx, int my, double flipState) {
         Vector currentPosition = dmd.getCoordinates(mx, my, flipState, 0, 0); // set reference postion to 0 0
         //double referencePl = referencePosition.times(inBeam);
-        double currentPl = currentPosition.times(inBeam);
+        double currentPl = currentPosition.dotProduct(inBeam);
         return currentPl; // - referencePl
     }
     
@@ -633,8 +633,8 @@ public class DmdSimulationCore {
      */
     private double calcOutOffsetPathLength(int mx, int my, Vector out) {
         //Vector currentPosition = dmd.getCoordinates(mx, my, tiltAngles[my][mx], 0, 0);
-        double referencePl = -referencePosition.times(out);
-        double currentPl = -dmdPositions[my][mx].times(out);
+        double referencePl = -referencePosition.dotProduct(out);
+        double currentPl = -dmdPositions[my][mx].dotProduct(out);
         return currentPl - referencePl;
     }
     

@@ -6,9 +6,6 @@
 package de.bio_photonics.coherent_dmd_sim_simulator;
 
 import ij.IJ;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.Random;
 import java.util.stream.IntStream;
 
@@ -35,13 +32,17 @@ public class RayTracingSimulator extends AbstractSimulator {
             this.directionVec = dVec;
         }
         
-        static Ray createGaussianRandomRay(Vector direction, double fwhm) {
+        static Ray createGaussianRandomRay(Vector direction, Vector planeAxis1, Vector planeAxis2, double fwhm) {
             double sigma = fwhm/2.3548;
             double x = rNumbGen.nextGaussian() * sigma;
             double y = rNumbGen.nextGaussian() * sigma;
+            Vector support = Vector.add(Vector.times(x, planeAxis1), Vector.times(y, planeAxis2));
+            //System.out.println(support);
+            /*
             //System.out.println(x + "\t" + y);
             Vector support = new Vector(x, y, 0);
             support = support.projectOnPlane(direction);
+            */
             return new Ray(support, direction);
         }
         
@@ -120,26 +121,16 @@ public class RayTracingSimulator extends AbstractSimulator {
         inBeam.times(-1);
         //Ray[] rays = new Ray[nrRays];
         Vector[] intersections = new Vector[nrRays];
-        
+        Vector[] orthoNormalBasis = Vector.getOrthoNormalBasis(inBeam, new Vector(1,0,0), new Vector(0,1,0));
+        Vector planeAxis1 = orthoNormalBasis[1];
+        Vector planeAxis2 = orthoNormalBasis[2];
         IntStream intersectionStream = IntStream.range(0, nrRays);
         intersectionStream.forEach(ray -> {
-            Ray r = Ray.createGaussianRandomRay(inBeam, beamDiameter);
+            Ray r = Ray.createGaussianRandomRay(inBeam, planeAxis1, planeAxis2, beamDiameter);
             r.supportVec.setX(r.supportVec.getX() + dsc.dmd.dmdWidth/2);
             r.supportVec.setY(r.supportVec.getY() + dsc.dmd.dmdHeight/2);
             intersections[ray] = findValidIntersection(r);
         });
-        try {
-            FileWriter fw = new FileWriter("D:\\dmd-simulator-images\\diff_points.txt");
-            for(Vector inters : intersections) {
-                if (inters == null) continue;
-                //System.out.println(inters.getX() + "\t" + inters.getY() + "\t" + inters.getZ());
-                fw.write(inters.getX() + "\t" + inters.getY() + "\t" + inters.getZ() + "\n");
-            }
-            fw.close();
-        } catch (IOException e) {
-            System.out.println("An error occurred.");
-            e.printStackTrace();
-        }
         /*
         for (int ray = 0; ray < nrRays; ray++) {
             Ray r = Ray.createGaussianRandomRay(inBeam, beamDiameter);
@@ -172,10 +163,10 @@ public class RayTracingSimulator extends AbstractSimulator {
                 double phi = dsc.phiMinR + ph * dsc.outStepSizeR;
                 for (int inters = 0; inters < nrRays; inters++) {
                     if (intersections[inters] == null) continue;
-                    double argIn = 2*Math.PI/lambdaUm*intersections[inters].times(inBeam);
+                    double argIn = 2*Math.PI/lambdaUm*intersections[inters].dotProduct(inBeam);
                     Vector out = new Vector(phi, theta);
 
-                    double argOut = 2*Math.PI/lambdaUm*intersections[inters].times(out);
+                    double argOut = 2*Math.PI/lambdaUm*intersections[inters].dotProduct(out);
                     double arg = argIn - argOut;
                     //System.out.println(inBeam + "\t" + out);
                     double re = Math.cos(arg);
@@ -236,9 +227,9 @@ public class RayTracingSimulator extends AbstractSimulator {
         meta.outStepSize = 0.02;
 
         meta.phiInStart = -21;
-        meta.phiInEnd = -20;
+       // meta.phiInEnd = -20;
         meta.thetaInStart = 21;
-        meta.thetaInEnd = 22;
+        //meta.thetaInEnd = 22;
         meta.inStepSize = 1.0;
         
         meta.bmp = Image.readBitmap("D:\\dmd-simulator-images\\interesting patterns\\dots-tri-50.bmp");
