@@ -19,7 +19,8 @@ package de.bio_photonics.coherent_dmd_sim_simulator;
 import de.bio_photonics.coherent_dmd_sim_simulator.DmdSimulationCore.MetaData;
 
 /**
- *
+ * class which provides a general simuilation framework for simulating DMDs
+ * with coherent Light
  * @author Mario
  */
 public abstract class AbstractSimulator {
@@ -63,10 +64,15 @@ public abstract class AbstractSimulator {
     int maxIntTh = -1, maxIntPh = -1;
     double minDistance = Double.MAX_VALUE;
     int minDisTh = -1, minDisPh = -1;
-    int inCounter = 0;
+    //int inCounter = 0;
     
     DmdSimulationCore dsc;
     
+    /**
+     * casic constructor for all simulators stores meta data and generates the
+     * dmd model
+     * @param meta 
+     */
     AbstractSimulator (MetaData meta) {
         this.meta = meta;
         // reading the meta data
@@ -107,7 +113,7 @@ public abstract class AbstractSimulator {
         maxIntTh = -1; maxIntPh = -1;
         minDistance = Double.MAX_VALUE;
         minDisTh = -1; minDisPh = -1;
-        inCounter = 0;
+        //inCounter = 0;
         
         // init dmd and simulation core
         Dmd dmd = new Dmd(nrX, nrY, mirrorSize, gap);
@@ -117,5 +123,8 @@ public abstract class AbstractSimulator {
                 beamDiameter, phiMin, phiMax, thetaMin, thetaMax, outStepSize, bmp);
     }
     
+    /**
+     * method to simulate with the desired approach
+     */
     abstract public void simulate();
 }

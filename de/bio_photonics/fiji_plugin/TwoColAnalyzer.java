@@ -26,8 +26,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *
- * @author m.lachetta
+ * checks for valid two color solutions in diffraction space with a fullfilled
+ * blaze condition for two colors, based on the results of the grating approach.
+ * Visual comparison of the OneColAnalyzer works better than this.
+ * @author Mario
  */
 public class TwoColAnalyzer implements PlugIn {
 

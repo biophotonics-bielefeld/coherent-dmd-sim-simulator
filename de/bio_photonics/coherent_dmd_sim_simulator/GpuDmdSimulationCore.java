@@ -20,7 +20,7 @@ import de.bio_photonics.coherent_dmd_sim_simulator.jcuda.JCudaEngine;
 import java.io.IOException;
 
 /**
- *
+ * gpu suppoerted extention, which implements the approaches via CUDA for the GPU
  * @author Mario
  */
 public class GpuDmdSimulationCore extends DmdSimulationCore {
@@ -60,6 +60,9 @@ public class GpuDmdSimulationCore extends DmdSimulationCore {
         init();
     }
     
+    /**
+     * initilizes the jCuda engine and copies datastructures to the GPU
+     */
     private void init() {
         if (!gpuInit) {
             JCudaEngine.setExceptionsEnabled(true);
@@ -129,6 +132,7 @@ public class GpuDmdSimulationCore extends DmdSimulationCore {
     /**
      * calculates in the interesting area {@link #setInterestingArea(int)}
      * the field of all out angles
+     * @return field distribution
      * @see #calcCpuOutAngle(int, int) 
      */
     @Override
@@ -192,7 +196,8 @@ public class GpuDmdSimulationCore extends DmdSimulationCore {
     }
     
     /**
-     * calculates the complex fields for true and false tilt states for all out angles
+     * calculates the complex fields for the desired tilt states for all out angles
+     * @param tiltState
      * @return intensity distribution for a true and false mirror
      */
     @Override

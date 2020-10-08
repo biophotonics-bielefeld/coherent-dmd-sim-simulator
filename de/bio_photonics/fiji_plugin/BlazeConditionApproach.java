@@ -24,7 +24,7 @@ import ij.gui.GenericDialog;
 import ij.plugin.PlugIn;
 
 /**
- *
+ * implementation of the blaze condition approach as fiji plugin
  * @author Mario
  */
 public class BlazeConditionApproach implements PlugIn {
@@ -79,10 +79,8 @@ public class BlazeConditionApproach implements PlugIn {
             for (int x = 0; x < width; x++) {
                 double phi = meta.phiInStart + meta.inStepSize * x;
                 double alpha = phi;//Math.atan(Math.sqrt(2)*Math.tan(phi*Math.PI/180))*180/Math.PI;
-                //System.out.println(inAngle + " " + meta.tiltAngle + " " + waveLength + " " + meta.latticeConstant);
                 double n = AnalyticDiagonalCalculator.calcDiffractionOrder(alpha, meta.tiltAngle, waveLength, meta.latticeConstant);
                 float value = (float) Math.sqrt(Math.pow(Math.sin(n*Math.PI), 2.0));
-                //System.out.println(x + " " + y);
                 diagonalEpd.set(x, y, value);
                 
                 outAngle.set(x, y, (float) (-alpha + 2*meta.tiltAngle));

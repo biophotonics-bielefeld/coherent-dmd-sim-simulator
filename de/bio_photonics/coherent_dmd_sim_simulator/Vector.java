@@ -18,7 +18,7 @@ package de.bio_photonics.coherent_dmd_sim_simulator;
 
 /**
  * Simple 3 dimensional vector class containing doubles
- * @author m.lachetta
+ * @author Mario
  */
 public class Vector {
     
@@ -59,7 +59,13 @@ public class Vector {
         return x + "\t" + y + "\t" + z;
     }
     
-    public void set(double x, double y, double z) {
+    /**
+     * sets x y and z of this vector
+     * @param x
+     * @param y
+     * @param z 
+     */
+    public final void set(double x, double y, double z) {
         this.x = x;
         this.y = y;
         this.z = z;
@@ -108,10 +114,22 @@ public class Vector {
         z += v.z;
     }
     
+    /**
+     * adds two vectors
+     * @param v1
+     * @param v2
+     * @return 
+     */
     public static Vector add(Vector v1, Vector v2) {
         return new Vector(v1.x+v2.x, v1.y+v2.y, v1.z+v2.z);
     }
     
+    /**
+     * calculates the difference of two vectors
+     * @param v1
+     * @param v2
+     * @return 
+     */
     public static Vector minus(Vector v1, Vector v2) {
         return new Vector(v1.x-v2.x, v1.y-v2.y, v1.z-v2.z);
     }
@@ -135,6 +153,12 @@ public class Vector {
         z *= a;
     }
     
+    /**
+     * multiplies a vector with a scalar
+     * @param a scalar
+     * @param v vector
+     * @return 
+     */
     public static Vector times(double a, Vector v) {
         return new Vector(a*v.x, a*v.y, a*v.z);
     }
@@ -148,6 +172,10 @@ public class Vector {
         times((1.0 / a));
     }
     
+    /**
+     * calculates the absolute square of this vector
+     * @return 
+     */
     public double getAbs() {
         return x*x+y*y+z*z;
     }
@@ -167,13 +195,24 @@ public class Vector {
         divide(getNorm());
     }
     
+    /**
+     * projects a vector on a 2D plane with the planes hessian normal vector
+     * @param planeNormal
+     * @return 
+     */
     public Vector projectOnPlane(Vector planeNormal) {
         double t = - (this.dotProduct(planeNormal)) / planeNormal.getAbs();
         return add(this, times(t, planeNormal));
     }
     
-    
-    
+    /**
+     * calculates a ortho normal basis based on three linear indepent vectors,
+     * using the gramm schmidt process
+     * @param w1
+     * @param w2
+     * @param w3
+     * @return 
+     */
     public static Vector[] getOrthoNormalBasis(Vector w1, Vector w2, Vector w3) {
         Vector v1 = w1.createCopy();
         v1.normalize();

@@ -26,8 +26,8 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
- * Simple class to handle 2 dimensinal float images
- * @author m.lachetta
+ * simple class to handle 2 dimensinal float images
+ * @author Mario
  */
 public class Image {
     
@@ -286,17 +286,6 @@ public class Image {
         new FileSaver(ip).saveAsTiff(outfile);
     }
     
-//    /**
-//     * saves this image
-//     * @param outfile path to save this image
-//     * @param meta meta object
-//     */
-//    void saveAsTiff(String outfile, DmdSimulator.MetaData meta) {
-//        update();
-//        ip.setProperty("Info", meta.toString());
-//        new FileSaver(ip).saveAsTiff(outfile);
-//    }
-    
     /**
      * saves this image
      * @param outfile path to save this image
@@ -328,6 +317,11 @@ public class Image {
         return bmp;
     }
     
+    /**
+     * generates an image of concentric black/white circles
+     * @param size width & height of this image
+     * @return 
+     */
     public static Image generateCircles(int size) {
         Image img = new Image(size, size);
         for(int y = 0; y < size; y++) {
@@ -343,7 +337,7 @@ public class Image {
         return img;
     }
     
-    public static String[] readFile(String path) {
+    private static String[] readFile(String path) {
         try {
             File file = new File(path);
             Scanner reader = new Scanner(file);
@@ -360,7 +354,7 @@ public class Image {
         }
     }
     
-    public static float[][] linesToFloats(String[] lines) {
+    private static float[][] linesToFloats(String[] lines) {
         int N = lines.length;
         int M = lines[0].split(" ").length;
         float[][] floatArray = new float[M][N];
@@ -374,6 +368,12 @@ public class Image {
         return floatArray;
     }
     
+    /**
+     * converts outputs of the c++ implementation of the ray tracing approach
+     * (https://github.com/hsandmeyer/dmd_traycing) into images
+     * @param path
+     * @return 
+     */
     public static Image readImageFromTxtFile(String path) {
         String[] lines = readFile(path);
         float[][] floatArray = linesToFloats(lines);
@@ -388,6 +388,10 @@ public class Image {
         return img;
     }
     
+    /**
+     * for testing
+     * @param args 
+     */
     public static void main(String args[]) {
         
         Image img = generateCircles(50);

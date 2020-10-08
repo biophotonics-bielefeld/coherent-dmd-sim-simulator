@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.stream.IntStream;
 
 /**
- *
+ * core class for the simulations, which implements the approaches
  * @author Mario
  */
 public class DmdSimulationCore {
@@ -164,6 +164,10 @@ public class DmdSimulationCore {
         init(flipStates);
     }
     
+    /**
+     * constructs an instance based on a MetaData instance
+     * @param meta 
+     */
     DmdSimulationCore(MetaData meta) {
         this.nrX = meta.nrX;
         this.nrY = meta.nrY;
@@ -185,6 +189,10 @@ public class DmdSimulationCore {
         init(meta.bmp);
     }
     
+    /**
+     * initilizes necessary data structures for the simulations
+     * @param flipStates 
+     */
     private void init(Image flipStates) {
         // switch from degree to rad
         thetaMinR = thetaMinD * Math.PI / 180;
@@ -281,66 +289,6 @@ public class DmdSimulationCore {
     }
     
     /**
-     * sets a region of interest around the maximum in the reference field for calculations
-     * @param rangeOfInterest in degree
-     */
-    /*
-    private void setInterestingArea(int rangeOfInterest) {
-        double trueMax = -1;
-        double falseMax = -1;
-        int trueMaxTh = -1, trueMaxPh = -1, falseMaxTh = -1, falseMaxPh = -1;
-        for (int th = 0; th < tMax; th++) {
-            for (int ph = 0; ph < pMax; ph++) {
-                double t = mirrorTrue[th][ph].square();
-                double f = mirrorFalse[th][ph].square();
-                if (t > trueMax) {
-                    trueMax = t;
-                    trueMaxTh = th;
-                    trueMaxPh = ph;
-                }
-                if (f > falseMax) {
-                    falseMax = f;
-                    falseMaxTh = th;
-                    falseMaxPh = ph;
-                }
-            }
-        }
-        
-        double range = rangeOfInterest / 180. * Math.PI;
-        int steps = (int) (range / outStepSizeR) + 1;
-        trueThStart = trueMaxTh - steps;
-        trueThEnd = trueMaxTh + steps;
-        truePhStart = trueMaxPh - steps;
-        truePhEnd = trueMaxPh + steps;
-        falseThStart = falseMaxTh - steps;
-        falseThEnd = falseMaxTh + steps;
-        falsePhStart = falseMaxPh - steps;
-        falsePhEnd = falseMaxPh + steps;
-        
-        trueThStart = checkThRange(trueThStart);
-        trueThEnd = checkThRange(trueThEnd);
-        truePhStart = checkPhRange(truePhStart);
-        truePhEnd = checkPhRange(truePhEnd);
-        falseThStart = checkThRange(falseThStart);
-        falseThEnd = checkThRange(falseThEnd);
-        falsePhStart = checkPhRange(falsePhStart);
-        falsePhEnd = checkPhRange(falsePhEnd);
-    }
-    */
-    
-    private int checkThRange(int thValue) {
-        if (thValue < 0) return 0;
-        else if (thValue > tMax) return tMax;
-        else return thValue;
-    }
-    
-    private int checkPhRange(int phValue) {
-        if (phValue < 0) return 0;
-        else if (phValue > pMax) return pMax;
-        else return phValue;
-    }
-    
-    /**
      * calculates the complex field of the native grating of the DMD for all out angles
      * @return 
      */
@@ -423,71 +371,6 @@ public class DmdSimulationCore {
                 field[finalTh][ph] = z0;
                 }
             });
-//            for (int ph = 0; ph < pMax; ph++) {
-//                double phi = phiMinR + ph * outStepSizeR;
-//                Vector out = new Vector(phi, theta);
-//                double bx = out.getX();
-//                double by = out.getY();
-//                
-//                double arg0 = -((2*m*(bx*mx+by*my)*pi)/lambda);
-//                double arg1 = (2*ax*m*(1+mx)*pi)/lambda;
-//                double arg2 = (2*bx*m*(1+mx)*pi)/lambda;
-//                double arg3 = (2*ay*m*(1+my)*pi)/lambda;
-//                double arg4 = (2*by*m*(1+my)*pi)/lambda;
-//                double arg5 = (2*ax*m*pi)/lambda;
-//                double arg6 = (2*bx*m*pi)/lambda;
-//                double arg7 = (2*ay*m*pi)/lambda;
-//                double arg8 = (2*by*m*pi)/lambda;
-//                
-//                if (ax == bx) {
-//                    arg0 = -((2*by*m*my*pi)/lambda);
-//                } else if (ay == by) {
-//                    arg0 = -((2*bx*m*mx*pi)/lambda);
-//                } else if (ax == bx && ay == by) {
-//                    field[th][ph] = new Complex(nrX*nrY, 0);
-//                    break;
-//                }
-//                
-//                double re0 = Math.cos(arg0);
-//                double im0 = Math.sin(arg0);
-//                double re1 = Math.cos(arg1);
-//                double im1 = Math.sin(arg1);
-//                double re2 = Math.cos(arg2);
-//                double im2 = Math.sin(arg2);
-//                double re3 = Math.cos(arg3);
-//                double im3 = Math.sin(arg3);
-//                double re4 = Math.cos(arg4);
-//                double im4 = Math.sin(arg4);
-//                double re5 = Math.cos(arg5);
-//                double im5 = Math.sin(arg5);
-//                double re6 = Math.cos(arg6);
-//                double im6 = Math.sin(arg6);
-//                double re7 = Math.cos(arg7);
-//                double im7 = Math.sin(arg7);
-//                double re8 = Math.cos(arg8);
-//                double im8 = Math.sin(arg8);
-//                
-//                Complex z0 = new Complex(re0, im0);
-//                Complex z1 = new Complex(re1-re2, im1-im2);
-//                Complex z2 = new Complex(re3-re4, im3-im4);
-//                Complex z3 = new Complex(re5-re6, im5-im6);
-//                Complex z4 = new Complex(re7-re8, im7-im8);
-//                
-//                if (ax == bx) {
-//                    z1 = new Complex(nrX, 0);
-//                    z3 = new Complex(1, 0);
-//                } else if (ay == by) {
-//                    z2 = new Complex(nrY, 0);
-//                    z4 = new Complex(1, 0);
-//                }
-//                
-//                z0.multi(z1);
-//                z0.multi(z2);
-//                z3.multi(z4);
-//                z0.divide(z3);
-//                
-//                field[th][ph] = z0;
-//            }
         }
         return field;
     }
@@ -569,30 +452,13 @@ public class DmdSimulationCore {
      * @see #calcCpuOutAngle(int, int) 
      */
     protected Complex[][] calcOutAngles() {
-        //System.out.println(trueThStart + " " + trueThEnd + " " + truePhStart + " " + truePhEnd);
         Complex[][] field = new Complex[tMax][pMax];
         for (int th = 0; th < tMax; th++) {
             final int finalTh = th;
             IntStream pStream = IntStream.range(0, pMax).parallel();
             pStream.forEach(ph -> field[finalTh][ph] = calcOutAngle(ph, finalTh));
-//            for (int ph = 0; ph < pMax; ph++) {
-//                //field[th][ph] = new Complex(0, 0);
-//                field[th][ph] = calcOutAngle(ph, th);
-//            }
             IJ.log("Progress: " + (th + 1) + "/" + tMax);
         }
-        /*
-        for (int th = trueThStart; th < trueThEnd; th++) {
-            for (int ph = truePhStart; ph < truePhEnd; ph++) {
-                field[th][ph].add(calcOutAngle(ph, th));
-            }
-        }
-        for (int th = falseThStart; th < falseThEnd; th++) {
-            for (int ph = falsePhStart; ph < falsePhEnd; ph++) {
-                field[th][ph].add(calcOutAngle(ph, th));
-            }
-        }
-        */
         return field;
     }
     
@@ -605,8 +471,6 @@ public class DmdSimulationCore {
         Complex field = new Complex(0, 0);
         for (int my = 0; my < nrY; my++) {
             for (int mx = 0; mx < nrX; mx++) {
-                //double tiltAngle = tiltAngles[my][mx];
-                //Vector referencePosition = tiltStates[my][mx] ? referenceTrue : referenceFalse;
                 Complex[][] referenceMirror = tiltStates[my][mx] ? mirrorTrue : mirrorFalse;
                 double initInPathLength = inOffsetPathLengths[my][mx];
                 Vector out = outAngles[th][ph];
@@ -645,9 +509,8 @@ public class DmdSimulationCore {
      */
     private double calcInOffsetPathLength(int mx, int my, double flipState) {
         Vector currentPosition = dmd.getCoordinates(mx, my, flipState, 0, 0); // set reference postion to 0 0
-        //double referencePl = referencePosition.times(inBeam);
         double currentPl = currentPosition.dotProduct(inBeam);
-        return currentPl; // - referencePl
+        return currentPl;
     }
     
     /**
@@ -659,7 +522,6 @@ public class DmdSimulationCore {
      * @return out path length
      */
     private double calcOutOffsetPathLength(int mx, int my, Vector out) {
-        //Vector currentPosition = dmd.getCoordinates(mx, my, tiltAngles[my][mx], 0, 0);
         double referencePl = -referencePosition.dotProduct(out);
         double currentPl = -dmdPositions[my][mx].dotProduct(out);
         return currentPl - referencePl;
@@ -674,7 +536,6 @@ public class DmdSimulationCore {
         int width = field[0].length;
         int height = field.length;
         Image view = new Image(width, height);
-        //view.setTitle((int) (lambda*1000) + "-intensity");
         for (int th = 0; th < height; th++) {
             for (int ph = 0; ph < width; ph++) {
                 view.set(ph, th, (float) field[th][ph].square());
@@ -692,7 +553,6 @@ public class DmdSimulationCore {
         int width = field[0].length;
         int height = field.length;
         Image view = new Image(width, height);
-        //view.setTitle((int) (lambda*1000) + "-phase");
         for (int th = 0; th < height; th++) {
             for (int ph = 0; ph < width; ph++) {
                 view.set(ph, th, (float) field[th][ph].arg());
@@ -702,16 +562,16 @@ public class DmdSimulationCore {
     }
     
     /**
-     * simulates the field for a specified incident beam vector
+     * simulates the field for a specified incident beam vector with the
+     * analytic phase shifting approach
      * @param inBeam incident beam vector
      * @return image array of
-     * [0,1,2,3]=[intensity, true reference field, false reference field, phase]
+     * {intensity, true reference field, false reference field, phase}
      */
-    public Image[] simulateFieldAccurate(Vector inBeam) {
+    public Image[] simulateAnalyticPhaseShiftingApproach(Vector inBeam) {
         setInBeam(inBeam);
         mirrorTrue = calcAnalyticSingleMirror(true);
         mirrorFalse = calcAnalyticSingleMirror(false);
-        //setInterestingArea(interestingAreaInDegrees);
         Complex[][] field = calcOutAngles();
         
         Image fieldIntensity = buildIntensityImage(field);
@@ -722,14 +582,19 @@ public class DmdSimulationCore {
         return retArray;
     }
     
-    public Image[] simulateFieldCoarse(Vector inBeam, boolean flipState) {
+    /**
+     * simulates the field for a specified incident beam vector with the
+     * grating approach 
+     * @param inBeam incident beam vector
+     * @param flipState flip state of all mirrors
+     * @return {envelope intensity, native grating intensity}
+     */
+    public Image[] simulateGratingApproach(Vector inBeam, boolean flipState) {
         setInBeam(inBeam);
-        Complex[][] trueFalse = calcAnalyticSingleMirror(flipState);
+        Complex[][] envelope = calcAnalyticSingleMirror(flipState);
         Complex[][] deltaPeaks = calcAnalyticDeltaPeaks();
-        Image trueFalseIntensity = buildIntensityImage(trueFalse);
+        Image envelopeIntensity = buildIntensityImage(envelope);
         Image deltaPeaksIntensity = buildIntensityImage(deltaPeaks);
-        return new Image[] {trueFalseIntensity, deltaPeaksIntensity};
+        return new Image[] {envelopeIntensity, deltaPeaksIntensity};
     }
-    
-    
 }

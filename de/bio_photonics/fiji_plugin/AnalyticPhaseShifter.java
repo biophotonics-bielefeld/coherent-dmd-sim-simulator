@@ -25,7 +25,7 @@ import ij.plugin.PlugIn;
 import java.io.File;
 
 /**
- *
+ * implementation of the analytic phase shifting approach as fiji plugin
  * @author Mario
  */
 public class AnalyticPhaseShifter implements PlugIn {

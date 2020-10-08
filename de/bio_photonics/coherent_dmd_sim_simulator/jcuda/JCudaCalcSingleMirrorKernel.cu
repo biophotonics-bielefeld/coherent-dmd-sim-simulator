@@ -17,6 +17,9 @@
 #include "cudaUtils.h"
 #include <cuComplex.h>
 
+/*
+ * cuda kernel for the envelope in the grating approach
+ */
 extern "C" __global__ void calcSingleMirror(int n, double m,
         double ax, double ay, double az, double alpha, float *finalField) {
     

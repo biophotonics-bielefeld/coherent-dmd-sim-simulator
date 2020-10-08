@@ -45,9 +45,6 @@ public class Dmd {
         this.gapY = gapY;
         this.dmdWidth = nrX * (mirrorWidth + gapX) - gapX;
         this.dmdHeight = nrY * (mirrorHeight + gapY) - gapY;
-        System.out.println(mirrorWidth + " " + mirrorHeight);
-        System.out.println(gapX + " " + gapY);
-        System.out.println((mirrorWidth+gapX) + " " + (mirrorHeight+gapY));
     }
     
     /**

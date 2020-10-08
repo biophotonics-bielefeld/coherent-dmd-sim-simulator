@@ -20,7 +20,7 @@ import de.bio_photonics.coherent_dmd_sim_simulator.DmdSimulationCore.MetaData;
 import ij.IJ;
 
 /**
- *
+ * class which implements the grating approach along the diagonal of the dmd
  * @author Mario
  */
 public class CoarseDiagonalSimulator extends AbstractSimulator {
@@ -32,29 +32,26 @@ public class CoarseDiagonalSimulator extends AbstractSimulator {
         this.tiltState = tiltState;
     }
     
+    /**
+     * simulates diffraction patterns along the diagonal of the dmd and
+     * measures the distance between the center of the envelope and the
+     * brightes native grating peak in pixels
+     * @return envelope to peak distances in pixels for the desired input angles
+     */
     double[] simulateDiagonal() {
         // init images for simulations
         Image gratingPeaks = new Image(width, height);
-        //Image intensityOn = new Image(width, height);
         Image intensity = new Image(width, height);
-        //Image envelopeOn = new Image(width, height);
         Image envelope = new Image(width, height);
-        //ImageStack intensityStack = new ImageStack(width, height);
         
         gratingPeaks.setTitle(String.valueOf(lambda) + "_grating-peaks");
-        //intensityOn.setTitle(String.valueOf(lambda) + "_on-intensity");
         intensity.setTitle(String.valueOf(lambda) + "_" + tiltState + "-intensity");
-        //envelopeOn.setTitle(String.valueOf(lambda) + "_on-evelope");
         envelope.setTitle(String.valueOf(lambda) + "_" + tiltState + "-evelope");
 
         gratingPeaks.show();
-        //intensityOn.show();
         intensity.show();
-        //envelopeOn.show();
         envelope.show();
         
-        //double[] intensityMaxX = new double[phiInSteps];
-        //double[] intensityMaxY = new double[phiInSteps];
         double[] envelopePeakDistance = new double[phiInSteps];;
         
         // simulating over all in angles
@@ -68,45 +65,33 @@ public class CoarseDiagonalSimulator extends AbstractSimulator {
             // the actual simulation
             dsc.setInBeam(inBeam);
             gratingPeaks.set(DmdSimulationCore.buildIntensityImage(dsc.calcAnalyticDeltaPeaks()));
-            //envelopeOn.set(buildIntensityImage(ort.computeGpuSingleMirror(true)));
             envelope.set(DmdSimulationCore.buildIntensityImage(dsc.calcAnalyticSingleMirror(tiltState)));
-            //intensityOn.set(Image.multiply(envelopeOn, gratingPeaks));
             intensity.set(Image.multiply(envelope, gratingPeaks));
-            //intensityStack.addSlice(intensity.getFloatProcessor());
 
-            //int[] envelopeOnMax = envelopeOn.findMax();
             int[] envelopeOffMax = envelope.findMax();
-            //int[] intensityOnMax = intensityOn.findMax();
             int[] intensityOffMax = intensity.findMax();
-            //double intensityEnvelopeDistanceOn = Math.sqrt((Math.pow(envelopeOnMax[0]-intensityOnMax[0], 2) + Math.pow(envelopeOnMax[1]-intensityOnMax[1], 2)))*outStepSize;
             double intensityEnvelopeDistanceOff = Math.sqrt((Math.pow(envelopeOffMax[0]-intensityOffMax[0], 2) + Math.pow(envelopeOffMax[1]-intensityOffMax[1], 2)));
 
-            // set calculates values for 1 color optimum into corresponding images
-            //intensityMaxXOn.set(ph, th, (float) (intensityOnMax[0]*outStepSize+phiMin));
-            //intensityMaxYOn.set(ph, th, (float) (intensityOnMax[1]*outStepSize+thetaMin));
-            //intensityMaxX[ph] = intensityOffMax[0]*outStepSize+phiMin;
-            //intensityMaxY[ph] = intensityOffMax[1]*outStepSize+thetaMin;
             envelopePeakDistance[ph] = intensityEnvelopeDistanceOff;
 
             // updateing images on the screen
             gratingPeaks.repaint();
-            //envelopeOn.repaint();
             envelope.repaint();
-            //intensityOn.repaint();
             intensity.repaint();
         }
         
         // cloeses all images
         gratingPeaks.close();
-        //envelopeOn.close();
         envelope.close();
-        //intensityOn.close();
         intensity.close();
-        //ImagePlus intensities = new ImagePlus("Intensities", intensityStack);
-        //new FileSaver(intensities).saveAsTiff(outDir + "/diagonals/" + lambda + ".tif");
         return envelopePeakDistance;
     }
     
+    /**
+     * starts the grating approach along the diagonal, values in this method need
+     * to be adjusted for the desired system conditions
+     * @param args the command line arguments
+     */
     public static void main(String[] args) {
         // creating meta data object
         MetaData meta = new MetaData();
@@ -120,7 +105,6 @@ public class CoarseDiagonalSimulator extends AbstractSimulator {
         meta.lambdas = new int[(lambdaEnd - lambdaStart) / lambdaStepSize + 1];
         for (int i = 0; i < nrLambdas; i++) {
             meta.lambdas[i] = lambdaStart + i*lambdaStepSize;
-            System.out.println(i + " " + meta.lambdas[i]);
         }
 
         meta.nrX = 20;
@@ -140,18 +124,9 @@ public class CoarseDiagonalSimulator extends AbstractSimulator {
 
         meta.phiInStart = -90;
         meta.phiInEnd = 90;
-        //meta.thetaInStart = -60;
-        //meta.thetaInEnd = 60;
         meta.inStepSize = 0.2;
 
-        //meta.bmp = Image.readBitmap("C:\\Users\\m.lachetta\\Downloads\\SLM_0,40_1,75_33_wl532_ang0_pha0.bmp");
         meta.bmp = new Image(meta.nrX, meta.nrY);
-        
-        //DmdSimulationCore dsc = new DmdSimulationCore(meta);
-        
-        
-//        CoarseDiagonalSimulator cds = new CoarseDiagonalSimulator(meta, lambdaStart, lambdaEnd, lambdaStepSize, false);
-//        cds.simulate();
         
         int diagonalInSteps = (int) ((meta.phiInEnd - meta.phiInStart) / meta.inStepSize);
         
@@ -162,13 +137,11 @@ public class CoarseDiagonalSimulator extends AbstractSimulator {
 
         int y = 0;
         for(int wavelength : meta.lambdas) {
-            System.out.println(wavelength);
             long startTime = System.currentTimeMillis();
             meta.lambdas[0] = wavelength;
             CoarseDiagonalSimulator cds = new CoarseDiagonalSimulator(meta, false);
             double[] epdDiagonal = cds.simulateDiagonal();
             for(int x = 0; x < epdDiagonal.length; x++) {
-                System.out.println(x + " " + (wavelength-lambdaStart) + " " + epdDiagonal[x]);
                 epdByLambda.set(x, y, (float) epdDiagonal[x]);
             }
             epdByLambda.repaint();
@@ -183,6 +156,9 @@ public class CoarseDiagonalSimulator extends AbstractSimulator {
             epdByLambda.close();
     }
 
+    /**
+     * not implemented in this simulator
+     */
     @Override
     public void simulate() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

@@ -25,7 +25,7 @@ import ij.plugin.PlugIn;
 import java.io.File;
 
 /**
- *
+ * implementation of the ray tracing approach as fiji plugin
  * @author Mario
  */
 public class RayTracingApproach implements PlugIn {

@@ -21,11 +21,10 @@ import java.util.Random;
 import java.util.stream.IntStream;
 
 /**
- *
+ * class which implements the ray tracing approach
  * @author Mario
  */
 public class RayTracingSimulator extends AbstractSimulator {
-    
     
     final int nrRays;
     
@@ -34,43 +33,48 @@ public class RayTracingSimulator extends AbstractSimulator {
         this.nrRays = nrRays;
     }
     
+    /**
+     * class which represents a single ray
+     */
     static private class Ray {
         static Random rNumbGen = new Random();
         final Vector supportVec, directionVec;
         
+        /**
+         * creats a ray based on a equation of line
+         * @param sVec support vector
+         * @param dVec direction vector
+         */
         Ray (Vector sVec, Vector dVec) {
             this.supportVec = sVec;
             this.directionVec = dVec;
         }
         
+        /**
+         * creates a gaussian distributed random ray in the plane clamped by the
+         * two plane axis vectors
+         * @param direction direction vector of the ray
+         * @param planeAxis1 first axis of the spawn plane
+         * @param planeAxis2 second axis of the spawn plane
+         * @param fwhm gaussian full width half maximum
+         * @return created ray
+         */
         static Ray createGaussianRandomRay(Vector direction, Vector planeAxis1, Vector planeAxis2, double fwhm) {
             double sigma = fwhm/2.3548;
             double x = rNumbGen.nextGaussian() * sigma;
             double y = rNumbGen.nextGaussian() * sigma;
             Vector support = Vector.add(Vector.times(x, planeAxis1), Vector.times(y, planeAxis2));
-            //System.out.println(support);
-            /*
-            //System.out.println(x + "\t" + y);
-            Vector support = new Vector(x, y, 0);
-            support = support.projectOnPlane(direction);
-            */
             return new Ray(support, direction);
-        }
-        
-        Vector get(double param) {
-            double x = supportVec.getX() + directionVec.getX() * param;
-            double y = supportVec.getY() + directionVec.getY() * param;
-            double z = supportVec.getZ() + directionVec.getZ() * param;
-            return new Vector(x, y, z);
         }
     }
     
     /**
-     * 
-     * @param r
-     * @param mx
-     * @param my
-     * @return double array of s t u intersection coordinates
+     * calculates based on a equation system the intersection point of a ray
+     * with a mirror of the dmd
+     * @param r ray
+     * @param mx mirror index in x
+     * @param my mirror index in y
+     * @return double array of intersection coordinates {s, t, u, tilt angle in degree} 
      */
     double[] calcIntersection(Ray r, int mx, int my) {
         double ax = r.directionVec.getX();
@@ -94,6 +98,13 @@ public class RayTracingSimulator extends AbstractSimulator {
         return new double[]{s,t,u, gammaD};
     }
     
+    /**
+     * finds intersections with the dmd and checks if the found intersection
+     * is physicaly valid
+     * @param r ray
+     * @return null if no valid intersection was found or the vector of the
+     * intersection koordinate with the dmd
+     */
     Vector findValidIntersection(Ray r) {
         double smallestU  = Double.MAX_VALUE;
         int finalMx = -1, finalMy = -1;
@@ -104,7 +115,6 @@ public class RayTracingSimulator extends AbstractSimulator {
                 double s = intersection[0];
                 double t = intersection[1];
                 double u = intersection[2];
-                //System.out.println(s + " " + t + " " + u);
                 if (s > mirrorSize || t > mirrorSize || s < 0 || t < 0) continue;
                 if (u < smallestU) {
                     smallestU = u;
@@ -113,13 +123,11 @@ public class RayTracingSimulator extends AbstractSimulator {
                     finalS = s;
                     finalT = t;
                     finalGamma = intersection[3];
-                    //System.out.println(smallestU + " " + finalMx + " " + finalMy + " " + finalS + " " + finalT);
                 }
             }
         }
         if (finalMx >= 0 && finalMy >= 0) {
             Vector validIntersection = dsc.dmd.getCoordinates(finalMx, finalMy, finalGamma, finalS, finalT);
-            //System.out.println(validIntersection.getX() + "\t" + validIntersection.getY() + "\t" + validIntersection.getZ());
             return validIntersection;
         } else return null;
         
@@ -130,7 +138,6 @@ public class RayTracingSimulator extends AbstractSimulator {
         
         Vector inBeam = new Vector(phiInStart / 180. * Math.PI, thetaInStart / 180. * Math.PI);
         inBeam.times(-1);
-        //Ray[] rays = new Ray[nrRays];
         Vector[] intersections = new Vector[nrRays];
         Vector[] orthoNormalBasis = Vector.getOrthoNormalBasis(inBeam, new Vector(1,0,0), new Vector(0,1,0));
         Vector planeAxis1 = orthoNormalBasis[1];
@@ -142,21 +149,11 @@ public class RayTracingSimulator extends AbstractSimulator {
             r.supportVec.setY(r.supportVec.getY() + dsc.dmd.dmdHeight/2);
             intersections[ray] = findValidIntersection(r);
         });
-        /*
-        for (int ray = 0; ray < nrRays; ray++) {
-            Ray r = Ray.createGaussianRandomRay(inBeam, beamDiameter);
-            r.supportVec.setX(r.supportVec.getX() + dsc.dmd.dmdWidth/2);
-            r.supportVec.setY(r.supportVec.getY() + dsc.dmd.dmdHeight/2);
-            intersections[ray] = findValidIntersection(r);
-        }
-        */
+        
         // init images for simulations
         Image intensity = new Image(width, height);
-        //Image phase = new Image(width, height);
         intensity.setTitle(String.valueOf(lambda) + "_intensity");
-        //phase.setTitle(String.valueOf(lambda) + "_phase");
         intensity.show();
-        //phase.show();
         
         Complex[][] field = new Complex[dsc.tMax][dsc.pMax];
         for (int th = 0; th < dsc.tMax; th++) {
@@ -164,7 +161,6 @@ public class RayTracingSimulator extends AbstractSimulator {
                 field[th][ph] = new Complex(0, 0);
             }
         }
-        
         
         for (int th = 0; th < dsc.tMax; th++) {
             double theta = dsc.thetaMinR + th * dsc.outStepSizeR;
@@ -179,7 +175,6 @@ public class RayTracingSimulator extends AbstractSimulator {
 
                     double argOut = 2*Math.PI/lambdaUm*intersections[inters].dotProduct(out);
                     double arg = argIn - argOut;
-                    //System.out.println(inBeam + "\t" + out);
                     double re = Math.cos(arg);
                     double im = Math.sin(arg);
 
@@ -190,8 +185,6 @@ public class RayTracingSimulator extends AbstractSimulator {
                 IJ.log(th + "/" + dsc.tMax);
                 intensity.set(DmdSimulationCore.buildIntensityImage(field));
                 intensity.repaint();
-                //phase.set(DmdSimulationCore.buildPhaseImage(field));
-                //phase.repaint();
             }
             
             
@@ -199,28 +192,21 @@ public class RayTracingSimulator extends AbstractSimulator {
         intensity.set(DmdSimulationCore.buildIntensityImage(field));
         intensity.repaint();
         intensity.saveAsTiff(outDir + lambda + "_ray_intensity.tif", meta);
-        //phase.saveAsTiff(outDir + lambda + "_ray_phase.tif", meta);
-        
-        // cloeses all images
         intensity.close();
-        //phase.close();
     }
     
+    /**
+     * starts the ray tracing approach, values in this method need
+     * to be adjusted for the desired system conditions
+     * @param args 
+     */
     public static void main(String[] args) {
         // creating meta data object
         DmdSimulationCore.MetaData meta = new DmdSimulationCore.MetaData();
         meta.outDir = "D:\\dmd-simulator-images\\";
         meta.gpuActive = false;
         
-        int lambdaStart = 532;
-        int lambdaEnd = 700;
-        int lambdaStepSize = 100;
-        int nrLambdas = (lambdaEnd - lambdaStart) / lambdaStepSize + 1;
-        meta.lambdas = new int[(lambdaEnd - lambdaStart) / lambdaStepSize + 1];
-        for (int i = 0; i < nrLambdas; i++) {
-            meta.lambdas[i] = lambdaStart + i*lambdaStepSize;
-            System.out.println(i + " " + meta.lambdas[i]);
-        }
+        meta.lambdas = new int[]{532};
 
         meta.nrX = 50;
         meta.nrY = 50;
@@ -238,9 +224,7 @@ public class RayTracingSimulator extends AbstractSimulator {
         meta.outStepSize = 0.02;
 
         meta.phiInStart = -21;
-       // meta.phiInEnd = -20;
         meta.thetaInStart = 21;
-        //meta.thetaInEnd = 22;
         meta.inStepSize = 1.0;
         
         meta.bmp = Image.readBitmap("D:\\dmd-simulator-images\\interesting patterns\\dots-tri-50.bmp");

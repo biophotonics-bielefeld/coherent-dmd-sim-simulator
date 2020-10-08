@@ -17,6 +17,9 @@
 #include "cudaUtils.h"
 #include <cuComplex.h>
 
+/*
+ * cuda kernel for the native grating in the grating approach
+ */
 extern "C" __global__ void calcDeltaPeaks(int n, double m, double ax, double ay,
         float *finalField) {
     

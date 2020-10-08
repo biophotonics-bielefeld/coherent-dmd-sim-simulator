@@ -17,11 +17,20 @@
 package de.bio_photonics.coherent_dmd_sim_simulator;
 
 /**
- *
- * @author m.lachetta
+ * class which implements the blaze condition approach along the diagonal
+ * of the dmd
+ * @author Mario
  */
 public class AnalyticDiagonalCalculator {
     
+    /**
+     * calculates the corresponing diffraction order for the input parameters
+     * @param inAngle in degrees
+     * @param tiltAngle in degrees
+     * @param waveLength in nm
+     * @param latticeConstant in µm
+     * @return corresponding diffraction order
+     */
     public static double calcDiffractionOrder(double inAngle, double tiltAngle, double waveLength, double latticeConstant) {
         double inAng = inAngle * Math.PI / 180;
         double tiltAng = tiltAngle * Math.PI / 180;
@@ -32,6 +41,8 @@ public class AnalyticDiagonalCalculator {
     }
 
     /**
+     * starts the blaze condition approcch, values in this method need
+     * to be adjusted for the desired system conditions
      * @param args the command line arguments
      */
     public static void main(String[] args) {
@@ -44,29 +55,13 @@ public class AnalyticDiagonalCalculator {
         meta.lambdas = new int[lambdaEnd - lambdaStart + 1];
         for (int i = 0; i <= lambdaEnd-lambdaStart; i++) meta.lambdas[i] = lambdaStart + i;
 
-        //meta.nrX = 20;
-        //meta.nrY = 20;
-
         meta.latticeConstant = 7.56;
-        //meta.fillFactor = 0.92;
         meta.tiltAngle = -12.0;
-
-        //meta.beamDiameter = (int) (Math.min(meta.nrX, meta.nrY) * meta.latticeConstant / 2.0);
-
-        //meta.phiOutStart = -80;
-        //meta.phiOutEnd = 80;
-        //meta.thetaOutStart = -80;
-        //meta.thetaOutEnd = 80;
-        //meta.outStepSize = 0.05;
 
         meta.phiInStart = -90;
         meta.phiInEnd = 90;
-        //meta.thetaInStart = -60;
-        //meta.thetaInEnd = 60;
         meta.inStepSize = 0.2;
-
-        //meta.bmp = Image.readBitmap("C:\\Users\\m.lachetta\\Downloads\\SLM_0,40_1,75_33_wl532_ang0_pha0.bmp");
-        //meta.bmp = new Image(meta.nrX, meta.nrY);
+        
         int width = (int) ((meta.phiInEnd - meta.phiInStart) / meta.inStepSize);
         int height = meta.lambdas.length;
         Image diagonalEpd = new Image(width, height);
@@ -81,7 +76,6 @@ public class AnalyticDiagonalCalculator {
                 //System.out.println(inAngle + " " + meta.tiltAngle + " " + waveLength + " " + meta.latticeConstant);
                 double n = calcDiffractionOrder(alpha, meta.tiltAngle, waveLength, meta.latticeConstant);
                 float value = (float) Math.sqrt(Math.pow(Math.sin(n*Math.PI), 2.0));
-                //System.out.println(x + " " + y);
                 diagonalEpd.set(x, y, value);
                 
                 outAngle.set(x, y, (float) (-alpha + 2*meta.tiltAngle));

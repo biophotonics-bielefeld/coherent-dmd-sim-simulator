@@ -25,7 +25,7 @@ import ij.plugin.PlugIn;
 import java.io.File;
 
 /**
- *
+ * implementation of the grating approach as fiji plugin
  * @author Mario
  */
 public class GratingApproach implements PlugIn {

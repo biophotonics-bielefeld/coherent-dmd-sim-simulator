@@ -16,7 +16,7 @@
  */
 #include "cudaUtils.h"
 
-/** cuda kernel for the dmd ray tracer
+/** cuda kernel for the analytic phase shifting approach
  * calculates the field for all out angles
  * @param n number of out angles/pixels
  * @param mStart index of first mirror for this kernel
@@ -29,7 +29,6 @@
  * @param *beamProfile pointer to the array of in beam intensitys for each mirror
  * @param *finalField pointer to the array for the resulting field for each out angle
  */
-
 extern "C" __global__ void calcOutAngles(int n, int mStart, int mEnd, int *tiltStates,
 		float *mirrorTrue, float *mirrorFalse, float *inOffsetPathLengths, float *beamProfile, float *finalField) {
     

@@ -25,8 +25,9 @@ import ij.plugin.PlugIn;
 import java.util.Map;
 
 /**
- *
- * @author m.lachetta
+ * calculates the diffraction space with a fullfilled blaze condition based
+ * on the results of the grating approach
+ * @author Mario
  */
 public class OneColAnalyzer implements PlugIn {
 
@@ -116,7 +117,6 @@ public class OneColAnalyzer implements PlugIn {
                 float temp = outImg.get(phOut, thOut);
                 outImg.set(phOut, thOut, temp+1);
                 outImg.repaint();
-                //IJ.log("Channel 1: " + ph + " " + th);
             }
         }
     }
