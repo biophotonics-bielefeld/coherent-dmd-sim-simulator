@@ -18,7 +18,7 @@ package de.bio_photonics.fiji_plugin;
 
 import de.bio_photonics.coherent_dmd_sim_simulator.DmdSimulationCore;
 import de.bio_photonics.coherent_dmd_sim_simulator.Image;
-import de.bio_photonics.coherent_dmd_sim_simulator.RayTracingSimulator;
+import de.bio_photonics.coherent_dmd_sim_simulator.RayTracingApproachSimulator;
 import ij.IJ;
 import ij.gui.GenericDialog;
 import ij.plugin.PlugIn;
@@ -107,7 +107,7 @@ public class RayTracingApproach implements PlugIn {
         meta.outStepSize = gd1.getNextNumber();
         
         IJ.log("Preparing simulation...");
-        RayTracingSimulator rts = new RayTracingSimulator(meta, nrRays);
+        RayTracingApproachSimulator rts = new RayTracingApproachSimulator(meta, nrRays);
         IJ.log("Starting simulation...");
         rts.simulate();
         IJ.log("Finnished simulation.");

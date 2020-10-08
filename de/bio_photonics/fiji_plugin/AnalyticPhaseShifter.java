@@ -16,7 +16,7 @@
  */
 package de.bio_photonics.fiji_plugin;
 
-import de.bio_photonics.coherent_dmd_sim_simulator.AccurateSimulator;
+import de.bio_photonics.coherent_dmd_sim_simulator.AnalyticPhaseShiftingApproachSimulator;
 import de.bio_photonics.coherent_dmd_sim_simulator.DmdSimulationCore.MetaData;
 import de.bio_photonics.coherent_dmd_sim_simulator.Image;
 import ij.IJ;
@@ -105,7 +105,7 @@ public class AnalyticPhaseShifter implements PlugIn {
         meta.outStepSize = gd.getNextNumber();
         
         IJ.log("Preparing simulation...");
-        AccurateSimulator as = new AccurateSimulator(meta, true);
+        AnalyticPhaseShiftingApproachSimulator as = new AnalyticPhaseShiftingApproachSimulator(meta, true);
         IJ.log("Starting simulation...");
         as.simulate();
         IJ.log("Finnished simulation.");

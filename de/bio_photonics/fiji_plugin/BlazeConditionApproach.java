@@ -16,7 +16,7 @@
  */
 package de.bio_photonics.fiji_plugin;
 
-import de.bio_photonics.coherent_dmd_sim_simulator.AnalyticDiagonalCalculator;
+import de.bio_photonics.coherent_dmd_sim_simulator.BlazeConditionApproachCalculator;
 import de.bio_photonics.coherent_dmd_sim_simulator.DmdSimulationCore;
 import de.bio_photonics.coherent_dmd_sim_simulator.Image;
 import ij.IJ;
@@ -79,7 +79,7 @@ public class BlazeConditionApproach implements PlugIn {
             for (int x = 0; x < width; x++) {
                 double phi = meta.phiInStart + meta.inStepSize * x;
                 double alpha = phi;//Math.atan(Math.sqrt(2)*Math.tan(phi*Math.PI/180))*180/Math.PI;
-                double n = AnalyticDiagonalCalculator.calcDiffractionOrder(alpha, meta.tiltAngle, waveLength, meta.latticeConstant);
+                double n = BlazeConditionApproachCalculator.calcDiffractionOrder(alpha, meta.tiltAngle, waveLength, meta.latticeConstant);
                 float value = (float) Math.sqrt(Math.pow(Math.sin(n*Math.PI), 2.0));
                 diagonalEpd.set(x, y, value);
                 

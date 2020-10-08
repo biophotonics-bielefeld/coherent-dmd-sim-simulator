@@ -26,11 +26,11 @@ import ij.plugin.HyperStackConverter;
  * class for implementing the analytic phase shifting approach
  * @author Mario
  */
-public class AccurateSimulator extends AbstractSimulator {
+public class AnalyticPhaseShiftingApproachSimulator extends AbstractSimulator {
     
     boolean saveImgs;
     
-    public AccurateSimulator(MetaData meta, boolean saveImgs) {
+    public AnalyticPhaseShiftingApproachSimulator(MetaData meta, boolean saveImgs) {
         super(meta);
         this.saveImgs = saveImgs;
     }
@@ -174,7 +174,7 @@ public class AccurateSimulator extends AbstractSimulator {
         //meta.bmp = new Image(meta.nrX, meta.nrY);
         
         
-        AccurateSimulator as = new AccurateSimulator(meta, true);
+        AnalyticPhaseShiftingApproachSimulator as = new AnalyticPhaseShiftingApproachSimulator(meta, true);
         long timeStart = System.currentTimeMillis();
         as.simulate();
         System.out.println("Time in seconds: " + ((System.currentTimeMillis() - timeStart) * 0.001));

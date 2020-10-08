@@ -16,7 +16,7 @@
  */
 package de.bio_photonics.fiji_plugin;
 
-import de.bio_photonics.coherent_dmd_sim_simulator.CoarseSimulator;
+import de.bio_photonics.coherent_dmd_sim_simulator.GratingApproachSimulator;
 import de.bio_photonics.coherent_dmd_sim_simulator.DmdSimulationCore;
 import de.bio_photonics.coherent_dmd_sim_simulator.Image;
 import ij.IJ;
@@ -41,8 +41,8 @@ public class GratingApproach implements PlugIn {
         //gd.addCheckbox("GPU Support", false);
         gd1.addStringField("Storage Directory", "D:\\dmd-simulator-images\\fiji-plugin-test", 100);
         gd1.addMessage("DMD Options");
-        gd1.addNumericField("No. mirrors X", 50, 0);
-        gd1.addNumericField("No. mirrors Y", 50, 0);
+        gd1.addNumericField("No. mirrors X", 20, 0);
+        gd1.addNumericField("No. mirrors Y", 20, 0);
         gd1.addNumericField("Lattice Constant", 7.56, 3, 5, "µm");
         gd1.addNumericField("Fill Factor", 0.92, 3);
         gd1.addNumericField("All Mirrors Tilt Angle", -12.0, 2, 5, "°");
@@ -119,7 +119,7 @@ public class GratingApproach implements PlugIn {
         else saveRaws = false;
         
         IJ.log("Preparing simulation...");
-        CoarseSimulator cs = new CoarseSimulator(meta, true, saveRaws);
+        GratingApproachSimulator cs = new GratingApproachSimulator(meta, true, saveRaws);
         IJ.log("Starting simulation...");
         cs.simulate();
         IJ.log("Finnished simulation.");

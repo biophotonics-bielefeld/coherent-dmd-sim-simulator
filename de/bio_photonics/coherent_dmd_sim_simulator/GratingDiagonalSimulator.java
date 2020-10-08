@@ -23,11 +23,11 @@ import ij.IJ;
  * class which implements the grating approach along the diagonal of the dmd
  * @author Mario
  */
-public class CoarseDiagonalSimulator extends AbstractSimulator {
+public class GratingDiagonalSimulator extends AbstractSimulator {
     
     boolean tiltState;
     
-    CoarseDiagonalSimulator(MetaData meta, boolean tiltState) {
+    GratingDiagonalSimulator(MetaData meta, boolean tiltState) {
         super(meta);
         this.tiltState = tiltState;
     }
@@ -139,7 +139,7 @@ public class CoarseDiagonalSimulator extends AbstractSimulator {
         for(int wavelength : meta.lambdas) {
             long startTime = System.currentTimeMillis();
             meta.lambdas[0] = wavelength;
-            CoarseDiagonalSimulator cds = new CoarseDiagonalSimulator(meta, false);
+            GratingDiagonalSimulator cds = new GratingDiagonalSimulator(meta, false);
             double[] epdDiagonal = cds.simulateDiagonal();
             for(int x = 0; x < epdDiagonal.length; x++) {
                 epdByLambda.set(x, y, (float) epdDiagonal[x]);

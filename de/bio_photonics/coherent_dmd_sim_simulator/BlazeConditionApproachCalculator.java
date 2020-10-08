@@ -21,7 +21,7 @@ package de.bio_photonics.coherent_dmd_sim_simulator;
  * of the dmd
  * @author Mario
  */
-public class AnalyticDiagonalCalculator {
+public class BlazeConditionApproachCalculator {
     
     /**
      * calculates the corresponing diffraction order for the input parameters

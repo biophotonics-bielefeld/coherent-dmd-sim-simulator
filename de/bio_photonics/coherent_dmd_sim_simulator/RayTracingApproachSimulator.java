@@ -24,11 +24,11 @@ import java.util.stream.IntStream;
  * class which implements the ray tracing approach
  * @author Mario
  */
-public class RayTracingSimulator extends AbstractSimulator {
+public class RayTracingApproachSimulator extends AbstractSimulator {
     
     final int nrRays;
     
-    public RayTracingSimulator(DmdSimulationCore.MetaData meta, int nrRays) {
+    public RayTracingApproachSimulator(DmdSimulationCore.MetaData meta, int nrRays) {
         super(meta);
         this.nrRays = nrRays;
     }
@@ -232,7 +232,7 @@ public class RayTracingSimulator extends AbstractSimulator {
         //meta.bmp.setAll(1);
         
         int nrOfRays = 10000;
-        RayTracingSimulator rts = new RayTracingSimulator(meta, nrOfRays);
+        RayTracingApproachSimulator rts = new RayTracingApproachSimulator(meta, nrOfRays);
         long timeStart = System.currentTimeMillis();
         rts.simulate();
         System.out.println("Time in seconds: " + ((System.currentTimeMillis() - timeStart) * 0.001));

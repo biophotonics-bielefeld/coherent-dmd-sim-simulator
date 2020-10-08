@@ -27,11 +27,11 @@ import ij.plugin.HyperStackConverter;
  * class which implements the grating approach
  * @author Mario
  */
-public class CoarseSimulator extends AbstractSimulator {
+public class GratingApproachSimulator extends AbstractSimulator {
     
     boolean tiltState, saveRaws;
     
-    public CoarseSimulator(MetaData meta, boolean tiltState, boolean saveRaws) {
+    public GratingApproachSimulator(MetaData meta, boolean tiltState, boolean saveRaws) {
         super(meta);
         this.tiltState = tiltState;
         this.saveRaws = saveRaws;
@@ -168,8 +168,8 @@ public class CoarseSimulator extends AbstractSimulator {
         
         meta.lambdas = new int[]{532};
 
-        meta.nrX = 50;
-        meta.nrY = 50;
+        meta.nrX = 20;
+        meta.nrY = 20;
 
         meta.latticeConstant = 7.56;
         meta.fillFactor = 0.92;
@@ -192,7 +192,7 @@ public class CoarseSimulator extends AbstractSimulator {
         meta.bmp = new Image(meta.nrX, meta.nrY);
         
         boolean save = false;
-        CoarseSimulator cs = new CoarseSimulator(meta, false, save);
+        GratingApproachSimulator cs = new GratingApproachSimulator(meta, false, save);
         long timeStart = System.currentTimeMillis();
         cs.simulate();
         System.out.println("Time in seconds: " + ((System.currentTimeMillis() - timeStart) * 0.001));
