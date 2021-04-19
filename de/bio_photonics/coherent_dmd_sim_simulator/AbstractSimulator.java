@@ -46,7 +46,7 @@ public abstract class AbstractSimulator {
     final double phiInEnd;
     final double inStepSize;
 
-    final int lambda;
+    final double lambda;
     boolean gpuActive;
     Image bmp;
     double lambdaUm;
@@ -116,6 +116,14 @@ public abstract class AbstractSimulator {
         //inCounter = 0;
         
         // init dmd and simulation core
+        Dmd dmd = new Dmd(nrX, nrY, mirrorSize, gap);
+        if (gpuActive) dsc = new GpuDmdSimulationCore(dmd, tiltAngle, lambdaUm, 
+                beamDiameter, phiMin, phiMax, thetaMin, thetaMax, outStepSize, bmp);
+        else dsc = new DmdSimulationCore(dmd, tiltAngle, lambdaUm, 
+                beamDiameter, phiMin, phiMax, thetaMin, thetaMax, outStepSize, bmp);
+    }
+    
+    protected final void reloadDmDSimulationCore(double lambdaUm) {
         Dmd dmd = new Dmd(nrX, nrY, mirrorSize, gap);
         if (gpuActive) dsc = new GpuDmdSimulationCore(dmd, tiltAngle, lambdaUm, 
                 beamDiameter, phiMin, phiMax, thetaMin, thetaMax, outStepSize, bmp);

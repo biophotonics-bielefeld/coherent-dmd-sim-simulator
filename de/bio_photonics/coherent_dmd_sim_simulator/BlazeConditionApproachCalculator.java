@@ -50,9 +50,9 @@ public class BlazeConditionApproachCalculator {
         meta.outDir = "D:\\dmd-simulator-images\\";
         meta.gpuActive = false;
         
-        int lambdaStart = 400;
-        int lambdaEnd = 700;
-        meta.lambdas = new int[lambdaEnd - lambdaStart + 1];
+        int lambdaStart = 473;
+        int lambdaEnd = 631;
+        meta.lambdas = new double[lambdaEnd - lambdaStart + 1];
         for (int i = 0; i <= lambdaEnd-lambdaStart; i++) meta.lambdas[i] = lambdaStart + i;
 
         meta.latticeConstant = 7.56;
@@ -69,7 +69,7 @@ public class BlazeConditionApproachCalculator {
         diagonalEpd.setTitle(lambdaStart + "_" + lambdaEnd + "_epd_" + (int)(meta.tiltAngle*10) + "_analytic");
         outAngle.setTitle(lambdaStart + "_" + lambdaEnd + "_out_" + (int)(meta.tiltAngle*10) + "_analytic");
         for (int y = 0; y < height; y++) {
-            int waveLength = meta.lambdas[y];
+            double waveLength = meta.lambdas[y];
             for (int x = 0; x < width; x++) {
                 double phi = meta.phiInStart + meta.inStepSize * x;
                 double alpha = phi;//Math.atan(Math.sqrt(2)*Math.tan(phi*Math.PI/180))*180/Math.PI;

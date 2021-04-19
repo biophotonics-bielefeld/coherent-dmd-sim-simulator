@@ -59,9 +59,9 @@ public class BlazeConditionApproach implements PlugIn {
         meta.outDir = gd1.getNextString() + "/";
         meta.latticeConstant = gd1.getNextNumber();
         meta.tiltAngle = gd1.getNextNumber();
-        int lambdaStart = (int) gd1.getNextNumber();
-        int lambdaEnd = (int) gd1.getNextNumber();
-        meta.lambdas = new int[lambdaEnd - lambdaStart + 1];
+        double lambdaStart = (int) gd1.getNextNumber();
+        double lambdaEnd = (int) gd1.getNextNumber();
+        meta.lambdas = new double[(int)(lambdaEnd - lambdaStart) + 1];
         for (int i = 0; i <= lambdaEnd-lambdaStart; i++) meta.lambdas[i] = lambdaStart + i;
         meta.phiInStart = gd1.getNextNumber();
         meta.phiInEnd = gd1.getNextNumber();
@@ -75,7 +75,7 @@ public class BlazeConditionApproach implements PlugIn {
         diagonalEpd.setTitle(lambdaStart + "_" + lambdaEnd + "_epd_" + (int)(meta.tiltAngle*10) + "_analytic");
         outAngle.setTitle(lambdaStart + "_" + lambdaEnd + "_out_" + (int)(meta.tiltAngle*10) + "_analytic");
         for (int y = 0; y < height; y++) {
-            int waveLength = meta.lambdas[y];
+            double waveLength = meta.lambdas[y];
             for (int x = 0; x < width; x++) {
                 double phi = meta.phiInStart + meta.inStepSize * x;
                 double alpha = phi;//Math.atan(Math.sqrt(2)*Math.tan(phi*Math.PI/180))*180/Math.PI;

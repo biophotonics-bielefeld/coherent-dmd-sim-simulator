@@ -206,7 +206,7 @@ public class RayTracingApproachSimulator extends AbstractSimulator {
         meta.outDir = "D:\\dmd-simulator-images\\";
         meta.gpuActive = false;
         
-        meta.lambdas = new int[]{532};
+        meta.lambdas = new double[]{532};
 
         meta.nrX = 50;
         meta.nrY = 50;

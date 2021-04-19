@@ -166,10 +166,10 @@ public class GratingApproachSimulator extends AbstractSimulator {
         meta.gpuActive = true;
         
         
-        meta.lambdas = new int[]{532};
+        meta.lambdas = new double[]{633};
 
-        meta.nrX = 20;
-        meta.nrY = 20;
+        meta.nrX = 100;
+        meta.nrY = 100;
 
         meta.latticeConstant = 7.56;
         meta.fillFactor = 0.92;
@@ -177,21 +177,21 @@ public class GratingApproachSimulator extends AbstractSimulator {
 
         meta.beamDiameter = (int) (Math.min(meta.nrX, meta.nrY) * meta.latticeConstant / 2.0);
 
-        meta.phiOutStart = -80;
-        meta.phiOutEnd = 80;
-        meta.thetaOutStart = -80;
-        meta.thetaOutEnd = 80;
-        meta.outStepSize = 0.1;
+        meta.phiOutStart = -25;
+        meta.phiOutEnd = -11;
+        meta.thetaOutStart = 11;
+        meta.thetaOutEnd = 25;
+        meta.outStepSize = 7.0/2460.0;
 
-        meta.phiInStart = -60;
-        meta.phiInEnd = 60;
-        meta.thetaInStart = -60;
-        meta.thetaInEnd = 60;
-        meta.inStepSize = 0.2;
+        meta.phiInStart = 0;
+        meta.phiInEnd = 1;
+        meta.thetaInStart = 0;
+        meta.thetaInEnd = 1;
+        meta.inStepSize = 1;
 
         meta.bmp = new Image(meta.nrX, meta.nrY);
         
-        boolean save = false;
+        boolean save = true;
         GratingApproachSimulator cs = new GratingApproachSimulator(meta, false, save);
         long timeStart = System.currentTimeMillis();
         cs.simulate();

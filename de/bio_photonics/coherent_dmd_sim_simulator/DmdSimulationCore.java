@@ -60,7 +60,7 @@ public class DmdSimulationCore {
      */
     public static class MetaData {
         public String outDir;
-        public int[] lambdas;
+        public double[] lambdas;
         public boolean gpuActive;
         public int beamDiameter;
         
@@ -89,7 +89,7 @@ public class DmdSimulationCore {
         @Override
         public String toString() {
             String lambdasString = "";
-            for (int lambda : lambdas) lambdasString += (lambda + " ");
+            for (double lambda : lambdas) lambdasString += (lambda + " ");
             String retString = "outDir: " + outDir +
                     "\ngpuActive: " + gpuActive +
                     "\nbeamDiameter: " + beamDiameter +
@@ -154,6 +154,8 @@ public class DmdSimulationCore {
         this.tiltD = tiltAngle;
         
         this.lambdaUm = lambdaUm;
+        //this.lambdaUm = 473.0*4.0/3.0 * 0.001;
+        //System.out.println("set lambdaUm: " + this.lambdaUm);
         this.beamDiameter = beamDiameter;
         this.phiMinD = phMin;
         this.phiMaxD = phMax;
@@ -178,7 +180,7 @@ public class DmdSimulationCore {
         
         this.dmd = new Dmd(nrX, nrY, meta.latticeConstant, gap);
         
-        this.lambdaUm = meta.lambdas[0];
+        this.lambdaUm = meta.lambdas[0] * 0.001;
         this.beamDiameter = meta.beamDiameter;
         this.phiMinD = meta.phiOutStart;
         this.phiMaxD = meta.phiOutEnd;

@@ -91,7 +91,7 @@ public class RayTracingApproach implements PlugIn {
         }
         meta.bmp = Image.readBitmap(bmpString);
         
-        meta.lambdas = new int[]{(int) gd1.getNextNumber()};
+        meta.lambdas = new double[]{gd1.getNextNumber()};
         meta.beamDiameter = (int) (Math.min(meta.nrX, meta.nrY) * meta.latticeConstant * gd1.getNextNumber());
         meta.phiInStart = gd1.getNextNumber();
         meta.phiInEnd = meta.phiInStart + 1;

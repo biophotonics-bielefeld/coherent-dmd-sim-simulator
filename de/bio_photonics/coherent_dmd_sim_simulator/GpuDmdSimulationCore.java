@@ -26,8 +26,8 @@ import java.io.IOException;
 public class GpuDmdSimulationCore extends DmdSimulationCore {
     static boolean gpuInit;
     static JCudaEngine gpuEngine;
-    static String outAnglesKernel, deltaPeaksKernel, singleMirrorKernel;
-    static String outAnglesFunktion, deltaPeaksFunktion, singleMirrorFunktion;
+    static String phaseShiftingKernel, nativeGratingKernel, singleMirrorKernel;
+    static String phaseShiftingFunktion, nativeGratingFunktion, singleMirrorFunktion;
     int jcPixelsPerKernel;
     JCudaEngine.IntArray jcTiltState;
     JCudaEngine.FloatArray jcGaussians;
@@ -67,25 +67,25 @@ public class GpuDmdSimulationCore extends DmdSimulationCore {
         if (!gpuInit) {
             JCudaEngine.setExceptionsEnabled(true);
             gpuEngine = new JCudaEngine();
-            outAnglesKernel = "JCudaCalcOutAnglesKernel";
-            deltaPeaksKernel = "JCudaCalcDeltaPeaks";
+            phaseShiftingKernel = "JCudaCalcOutAnglesKernel";
+            nativeGratingKernel = "JCudaCalcDeltaPeaks";
             singleMirrorKernel = "JCudaCalcSingleMirror";
             String outAnglesFilePath = "de\\bio_photonics\\coherent_dmd_sim_simulator\\jcuda\\JCudaCalcOutAnglesKernel.cu";
             String deltaPeaksFilePath = "de\\bio_photonics\\coherent_dmd_sim_simulator\\jcuda\\JCudaCalcDeltaPeaksKernel.cu";
             String singleMirrorFilePath = "de\\bio_photonics\\coherent_dmd_sim_simulator\\jcuda\\JCudaCalcSingleMirrorKernel.cu";
-            outAnglesFunktion = "calcOutAngles";
-            deltaPeaksFunktion = "calcDeltaPeaks";
+            phaseShiftingFunktion = "calcOutAngles";
+            nativeGratingFunktion = "calcDeltaPeaks";
             singleMirrorFunktion = "calcSingleMirror";
             try {
-                gpuEngine.loadModule(outAnglesKernel, outAnglesFilePath);
-                gpuEngine.loadModule(deltaPeaksKernel, deltaPeaksFilePath);
+                gpuEngine.loadModule(phaseShiftingKernel, outAnglesFilePath);
+                gpuEngine.loadModule(nativeGratingKernel, deltaPeaksFilePath);
                 gpuEngine.loadModule(singleMirrorKernel, singleMirrorFilePath);
             } catch (IOException ex) {
                 throw new RuntimeException("loading GPU modules failed");
             }
 
-            gpuEngine.loadFunktion(outAnglesKernel, outAnglesFunktion);
-            gpuEngine.loadFunktion(deltaPeaksKernel, deltaPeaksFunktion);
+            gpuEngine.loadFunktion(phaseShiftingKernel, phaseShiftingFunktion);
+            gpuEngine.loadFunktion(nativeGratingKernel, nativeGratingFunktion);
             gpuEngine.loadFunktion(singleMirrorKernel, singleMirrorFunktion);
             gpuInit = true;
         }
@@ -95,8 +95,8 @@ public class GpuDmdSimulationCore extends DmdSimulationCore {
         constantInts[1] = nrY;
         constantInts[2] = pMax;
         constantInts[3] = tMax;
-        gpuEngine.writeConstant(outAnglesKernel, "constantInts", constantInts);
-        gpuEngine.writeConstant(deltaPeaksKernel, "constantInts", constantInts);
+        gpuEngine.writeConstant(phaseShiftingKernel, "constantInts", constantInts);
+        gpuEngine.writeConstant(nativeGratingKernel, "constantInts", constantInts);
         gpuEngine.writeConstant(singleMirrorKernel, "constantInts", constantInts);
         
         float[] constantFloats = new float[13];
@@ -113,8 +113,8 @@ public class GpuDmdSimulationCore extends DmdSimulationCore {
         constantFloats[10] = (float) referencePosition.getX();
         constantFloats[11] = (float) referencePosition.getY();
         constantFloats[12] = (float) referencePosition.getZ();
-        gpuEngine.writeConstant(outAnglesKernel, "constantFloats", constantFloats);
-        gpuEngine.writeConstant(deltaPeaksKernel, "constantFloats", constantFloats);
+        gpuEngine.writeConstant(phaseShiftingKernel, "constantFloats", constantFloats);
+        gpuEngine.writeConstant(nativeGratingKernel, "constantFloats", constantFloats);
         gpuEngine.writeConstant(singleMirrorKernel, "constantFloats", constantFloats);
         
         for (int y = 0; y < tiltStates.length; y++) {
@@ -167,7 +167,7 @@ public class GpuDmdSimulationCore extends DmdSimulationCore {
             int mStart = mirrorsPerKernel * k;
             int mEnd = mStart + mpk;
             if (mpk <= 0) throw new RuntimeException("mirrorsPerKernel error");
-            gpuEngine.launchKernel(outAnglesKernel, outAnglesFunktion, blockSizeX, nrP, mStart, mEnd, jcTiltState,
+            gpuEngine.launchKernel(phaseShiftingKernel, phaseShiftingFunktion, blockSizeX, nrP, mStart, mEnd, jcTiltState,
                 jcMirrorTrue, jcMirrorFalse, jcInOffsetPathLengths, jcGaussians, jcFinalField);
             
         }
@@ -186,7 +186,7 @@ public class GpuDmdSimulationCore extends DmdSimulationCore {
     protected Complex[][] calcAnalyticDeltaPeaks() {
         int nrPixels = pMax * tMax;
         int blockSizeX = 256;
-        gpuEngine.launchKernel(deltaPeaksKernel, deltaPeaksFunktion,
+        gpuEngine.launchKernel(nativeGratingKernel, nativeGratingFunktion,
                 blockSizeX, nrPixels, mirrorSize+gap, inBeam.getX(),
                 inBeam.getY(), jcField);
         

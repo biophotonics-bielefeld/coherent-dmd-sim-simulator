@@ -98,11 +98,11 @@ public class GratingDiagonalSimulator extends AbstractSimulator {
         meta.outDir = "D:\\dmd-simulator-images\\";
         meta.gpuActive = true;
         
-        int lambdaStart = 400;
-        int lambdaEnd = 700;
+        int lambdaStart = 473;
+        int lambdaEnd = 632;
         int lambdaStepSize = 1;
         int nrLambdas = (lambdaEnd - lambdaStart) / lambdaStepSize + 1;
-        meta.lambdas = new int[(lambdaEnd - lambdaStart) / lambdaStepSize + 1];
+        meta.lambdas = new double[(lambdaEnd - lambdaStart) / lambdaStepSize + 1];
         for (int i = 0; i < nrLambdas; i++) {
             meta.lambdas[i] = lambdaStart + i*lambdaStepSize;
         }
@@ -136,7 +136,7 @@ public class GratingDiagonalSimulator extends AbstractSimulator {
         epdByLambda.show();
 
         int y = 0;
-        for(int wavelength : meta.lambdas) {
+        for(double wavelength : meta.lambdas) {
             long startTime = System.currentTimeMillis();
             meta.lambdas[0] = wavelength;
             GratingDiagonalSimulator cds = new GratingDiagonalSimulator(meta, false);

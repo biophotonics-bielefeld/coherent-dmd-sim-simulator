@@ -90,7 +90,7 @@ public class AnalyticPhaseShifter implements PlugIn {
         }
         meta.bmp = Image.readBitmap(bmpString);
         
-        meta.lambdas = new int[]{(int) gd.getNextNumber()};
+        meta.lambdas = new double[]{ gd.getNextNumber()};
         meta.beamDiameter = (int) (Math.min(meta.nrX, meta.nrY) * meta.latticeConstant * gd.getNextNumber());
         meta.phiInStart = gd.getNextNumber();
         meta.phiInEnd = meta.phiInStart + 1;

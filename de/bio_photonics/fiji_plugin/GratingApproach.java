@@ -85,7 +85,7 @@ public class GratingApproach implements PlugIn {
         meta.tiltAngle = gd1.getNextNumber();
         meta.bmp = new Image(meta.nrX, meta.nrY);
         
-        meta.lambdas = new int[]{(int) gd1.getNextNumber()};
+        meta.lambdas = new double[]{gd1.getNextNumber()};
         meta.beamDiameter = (int) (Math.min(meta.nrX, meta.nrY) * meta.latticeConstant * gd1.getNextNumber());
         meta.phiInStart = gd1.getNextNumber();
         meta.phiInEnd = gd1.getNextNumber();

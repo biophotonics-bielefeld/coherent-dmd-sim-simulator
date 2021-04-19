@@ -147,10 +147,10 @@ public class AnalyticPhaseShiftingApproachSimulator extends AbstractSimulator {
         meta.outDir = "D:\\dmd-simulator-images\\";
         meta.gpuActive = true;
         
-        meta.lambdas = new int[]{532};
+        meta.lambdas = new double[]{631};
 
-        meta.nrX = 50;
-        meta.nrY = 50;
+        meta.nrX = 350;
+        meta.nrY = 350;
 
         meta.latticeConstant = 7.56;
         meta.fillFactor = 0.92;
@@ -158,19 +158,19 @@ public class AnalyticPhaseShiftingApproachSimulator extends AbstractSimulator {
 
         meta.beamDiameter = (int) (Math.min(meta.nrX, meta.nrY) * meta.latticeConstant / 2.0);
 
-        meta.phiOutStart = -30;
-        meta.phiOutEnd = 30;
-        meta.thetaOutStart = -30;
-        meta.thetaOutEnd = 30;
-        meta.outStepSize = 0.02;
+        meta.phiOutStart = -14.2-0.651361;
+        meta.phiOutEnd = -14.2+0.651361+0.00167877;
+        meta.thetaOutStart = 14.2-0.651361;
+        meta.thetaOutEnd = 14.2+0.651361+0.00167877;
+        meta.outStepSize = 0.00167877;
 
-        meta.phiInStart = 0;
-        meta.phiInEnd = 1;
-        meta.thetaInStart = 0;
-        meta.thetaInEnd = 1;
+        meta.phiInStart = 34.05;
+        meta.phiInEnd = 35.05;
+        meta.thetaInStart = -34.05;
+        meta.thetaInEnd = -33.05;
         meta.inStepSize = 1.0;
 
-        meta.bmp = Image.readBitmap("D:\\dmd-simulator-images\\interesting patterns\\lines-50.bmp");
+        meta.bmp = Image.readBitmap("D:\\dmd-simulator-images\\cSIM-60x-165-133-473-631\\DLP6500_1,33_1,65_33_wl631_ang0_pha0.bmp");
         //meta.bmp = new Image(meta.nrX, meta.nrY);
         
         
