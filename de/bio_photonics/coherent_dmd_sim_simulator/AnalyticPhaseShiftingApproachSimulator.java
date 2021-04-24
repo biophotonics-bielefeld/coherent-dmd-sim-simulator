@@ -149,8 +149,8 @@ public class AnalyticPhaseShiftingApproachSimulator extends AbstractSimulator {
         
         meta.lambdas = new double[]{631};
 
-        meta.nrX = 350;
-        meta.nrY = 350;
+        meta.nrX = 20;
+        meta.nrY = 20;
 
         meta.latticeConstant = 7.56;
         meta.fillFactor = 0.92;
@@ -158,11 +158,11 @@ public class AnalyticPhaseShiftingApproachSimulator extends AbstractSimulator {
 
         meta.beamDiameter = (int) (Math.min(meta.nrX, meta.nrY) * meta.latticeConstant / 2.0);
 
-        meta.phiOutStart = -14.2-0.651361;
-        meta.phiOutEnd = -14.2+0.651361+0.00167877;
-        meta.thetaOutStart = 14.2-0.651361;
-        meta.thetaOutEnd = 14.2+0.651361+0.00167877;
-        meta.outStepSize = 0.00167877;
+        meta.phiOutStart = -90;
+        meta.phiOutEnd = 90;
+        meta.thetaOutStart = -90;
+        meta.thetaOutEnd = 90;
+        meta.outStepSize = 0.05;
 
         meta.phiInStart = 34.05;
         meta.phiInEnd = 35.05;
@@ -170,7 +170,7 @@ public class AnalyticPhaseShiftingApproachSimulator extends AbstractSimulator {
         meta.thetaInEnd = -33.05;
         meta.inStepSize = 1.0;
 
-        meta.bmp = Image.readBitmap("D:\\dmd-simulator-images\\cSIM-60x-165-133-473-631\\DLP6500_1,33_1,65_33_wl631_ang0_pha0.bmp");
+        meta.bmp = Image.readBitmap("D:\\dmd-simulator-images\\cSIM-60x-165-133-473-631\\DLP6500_1,33_1,65_33_wl631_ang2_pha0.bmp");
         //meta.bmp = new Image(meta.nrX, meta.nrY);
         
         
